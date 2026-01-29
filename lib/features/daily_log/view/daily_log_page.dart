@@ -200,6 +200,7 @@ class _CalendarGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final firstDayOfMonth = DateTime(selectedMonth.year, selectedMonth.month);
     final lastDayOfMonth = DateTime(
       selectedMonth.year,
@@ -209,7 +210,13 @@ class _CalendarGrid extends StatelessWidget {
     final firstWeekday = firstDayOfMonth.weekday % 7; // Sunday = 0
     final daysInMonth = lastDayOfMonth.day;
 
-    const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    // Generate localized weekday abbreviations (Sunday to Saturday)
+    final narrowWeekdayFormat = DateFormat.EEEE(locale);
+    final weekdays = List.generate(7, (index) {
+      // Jan 4, 2026 is a Sunday
+      final date = DateTime(2026, 1, 4 + index);
+      return narrowWeekdayFormat.format(date)[0].toUpperCase();
+    });
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
