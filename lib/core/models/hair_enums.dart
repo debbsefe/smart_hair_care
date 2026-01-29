@@ -11,7 +11,8 @@ enum HairType {
   type3c('3c', 'Type 3C - Curly (Corkscrew)'),
   type4a('4a', 'Type 4A - Coily (S-pattern)'),
   type4b('4b', 'Type 4B - Coily (Z-pattern)'),
-  type4c('4c', 'Type 4C - Coily (Tight)');
+  type4c('4c', 'Type 4C - Coily (Tight)')
+  ;
 
   const HairType(this.value, this.label);
   final String value;
@@ -30,7 +31,8 @@ enum HairType {
 enum Porosity {
   low('low', 'Low Porosity'),
   medium('medium', 'Medium Porosity'),
-  high('high', 'High Porosity');
+  high('high', 'High Porosity')
+  ;
 
   const Porosity(this.value, this.label);
   final String value;
@@ -49,7 +51,8 @@ enum Porosity {
 enum Density {
   low('low', 'Low Density'),
   medium('medium', 'Medium Density'),
-  high('high', 'High Density');
+  high('high', 'High Density')
+  ;
 
   const Density(this.value, this.label);
   final String value;
@@ -68,7 +71,8 @@ enum Density {
 enum Thickness {
   fine('fine', 'Fine'),
   medium('medium', 'Medium'),
-  coarse('coarse', 'Coarse');
+  coarse('coarse', 'Coarse')
+  ;
 
   const Thickness(this.value, this.label);
   final String value;
@@ -88,7 +92,8 @@ enum ScalpType {
   dry('dry', 'Dry'),
   normal('normal', 'Normal'),
   oily('oily', 'Oily'),
-  combination('combination', 'Combination');
+  combination('combination', 'Combination')
+  ;
 
   const ScalpType(this.value, this.label);
   final String value;
