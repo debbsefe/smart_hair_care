@@ -5,3 +5,6 @@ analyzer:
 linter:
   rules:
     public_member_api_docs: false
+    # FutureProvider.family returns an internal type (FutureProviderFamily)
+    # that isn't exported from the public API
+    specify_nonobvious_property_types: false

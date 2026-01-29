@@ -1,33 +1,64 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AppBlocObserver extends BlocObserver {
-  const AppBlocObserver();
+/// Custom ProviderObserver for logging (Riverpod 3 API)
+final class AppProviderObserver extends ProviderObserver {
+  const AppProviderObserver();
 
   @override
-  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
-    super.onChange(bloc, change);
-    log('onChange(${bloc.runtimeType}, $change)');
+  void didUpdateProvider(
+    ProviderObserverContext context,
+    Object? previousValue,
+    Object? newValue,
+  ) {
+    final providerName = context.provider.name ?? context.provider.runtimeType;
+    log(
+      'Provider updated: $providerName\n'
+      '  Previous: $previousValue\n'
+      '  New: $newValue',
+    );
   }
 
   @override
-  void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
-    log('onError(${bloc.runtimeType}, $error, $stackTrace)');
-    super.onError(bloc, error, stackTrace);
+  void didAddProvider(
+    ProviderObserverContext context,
+    Object? value,
+  ) {
+    final providerName = context.provider.name ?? context.provider.runtimeType;
+    log('Provider added: $providerName');
+  }
+
+  @override
+  void providerDidFail(
+    ProviderObserverContext context,
+    Object error,
+    StackTrace stackTrace,
+  ) {
+    final providerName = context.provider.name ?? context.provider.runtimeType;
+    log(
+      'Provider error: $providerName\n'
+      '  Error: $error\n'
+      '  StackTrace: $stackTrace',
+    );
   }
 }
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  Bloc.observer = const AppBlocObserver();
-
   // Add cross-flavor configuration here
 
-  runApp(await builder());
+  runApp(
+    ProviderScope(
+      observers: const [AppProviderObserver()],
+      child: await builder(),
+    ),
+  );
 }
