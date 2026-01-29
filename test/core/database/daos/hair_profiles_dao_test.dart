@@ -50,7 +50,7 @@ void main() {
     });
 
     test('updateProfile modifies profile', () async {
-      final id = await dao.insertProfile(createTestProfile(name: 'Original'));
+      await dao.insertProfile(createTestProfile(name: 'Original'));
       final profile = await dao.getProfile();
 
       final updated = profile!.copyWith(name: const Value('Updated'));
