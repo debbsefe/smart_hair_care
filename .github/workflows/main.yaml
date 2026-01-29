@@ -1,26 +1,53 @@
-name: smart_hair_care
+name: smart_cal
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - edited
 
 jobs:
   semantic-pull-request:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
-
+    
   build:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
-    with:
-      flutter_version: "3.35.x"
+    runs-on: ubuntu-latest
+    
+    steps:
+       - name: 📚 Git Checkout
+         uses: actions/checkout@v6
+    
+       - name: 🐦 Setup Flutter
+         uses: subosito/flutter-action@v2
+         with:
+          channel: stable
+          cache: true
+          flutter-version: '3.35.0'
 
+       - name: 📦 Install Dependencies
+         run: |
+            flutter pub global activate very_good_cli
+            very_good packages get 
+            sudo apt install sqlite3 libsqlite3-dev
+    
+       - name: ✨ Check Formatting
+         run: dart format --set-exit-if-changed lib test
+    
+       - name: 🕵️ Analyze
+         run: flutter analyze 
+    
+       - name: 🧪 Run Tests
+         run: very_good test --coverage --min-coverage 10
+    
   spell-check:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
     with:
