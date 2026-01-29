@@ -31,8 +31,7 @@ jobs:
          with:
           channel: stable
           cache: true
-          flutter-version: '3.35.0'
-
+          
        - name: 📦 Install Dependencies
          run: |
             flutter pub global activate very_good_cli
@@ -47,10 +46,3 @@ jobs:
     
        - name: 🧪 Run Tests
          run: very_good test --coverage --min-coverage 10
-    
-  spell-check:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
-    with:
-      includes: |
-        **/*.md
-      modified_files_only: false

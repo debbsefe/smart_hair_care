@@ -10,7 +10,8 @@ enum ProductCategory {
   mousse('mousse', 'Mousse'),
   spray('spray', 'Spray'),
   treatment('treatment', 'Treatment'),
-  other('other', 'Other');
+  other('other', 'Other')
+  ;
 
   const ProductCategory(this.value, this.displayName);
 

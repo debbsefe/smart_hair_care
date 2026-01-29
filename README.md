@@ -74,8 +74,8 @@ lib/
 
 ### Prerequisites
 
-- Flutter SDK ^3.35.0
-- Dart SDK ^3.9.0
+- Flutter SDK (see `pubspec.yaml` for version)
+- Dart SDK (see `pubspec.yaml` for version)
 
 ### Setup
 

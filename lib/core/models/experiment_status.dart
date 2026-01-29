@@ -2,7 +2,8 @@
 enum ExperimentStatus {
   active('active', 'Active'),
   completed('completed', 'Completed'),
-  abandoned('abandoned', 'Abandoned');
+  abandoned('abandoned', 'Abandoned')
+  ;
 
   const ExperimentStatus(this.value, this.label);
   final String value;

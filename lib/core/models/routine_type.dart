@@ -4,7 +4,8 @@ enum RoutineType {
   refresh('refresh', 'Refresh'),
   protectiveStyle('protective_style', 'Protective Style'),
   treatment('treatment', 'Treatment'),
-  other('other', 'Other');
+  other('other', 'Other')
+  ;
 
   const RoutineType(this.value, this.label);
   final String value;
