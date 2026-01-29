@@ -2,23 +2,9 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/database/database.dart';
+import 'package:smart_hair_care/core/models/product_category.dart';
 import 'package:smart_hair_care/features/product_inventory/providers/providers.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
-
-/// Product categories available in the app
-const productCategories = [
-  'shampoo',
-  'conditioner',
-  'deep_conditioner',
-  'leave_in',
-  'oil',
-  'cream',
-  'gel',
-  'mousse',
-  'spray',
-  'treatment',
-  'other',
-];
 
 /// Page for adding or editing a product
 class AddEditProductPage extends ConsumerStatefulWidget {
@@ -55,7 +41,7 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
   late final TextEditingController _notesController;
   late final TextEditingController _imageUrlController;
 
-  late String _selectedCategory;
+  late ProductCategory _selectedCategory;
   double? _rating;
   DateTime? _purchaseDate;
   DateTime? _expiryDate;
@@ -70,7 +56,7 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
     _ingredientsController = TextEditingController(text: product?.ingredients);
     _notesController = TextEditingController(text: product?.notes);
     _imageUrlController = TextEditingController(text: product?.imageUrl);
-    _selectedCategory = product?.category ?? productCategories.first;
+    _selectedCategory = ProductCategory.fromValue(product?.category);
     _rating = product?.rating;
     _purchaseDate = product?.purchaseDate;
     _expiryDate = product?.expiryDate;
@@ -99,7 +85,7 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
           widget.product!.copyWith(
             name: _nameController.text.trim(),
             brand: Value(_brandController.text.trim().nullIfEmpty),
-            category: _selectedCategory,
+            category: _selectedCategory.value,
             ingredients: Value(_ingredientsController.text.trim().nullIfEmpty),
             rating: Value(_rating),
             notes: Value(_notesController.text.trim().nullIfEmpty),
@@ -112,7 +98,7 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
       } else {
         await notifier.addProduct(
           name: _nameController.text.trim(),
-          category: _selectedCategory,
+          category: _selectedCategory.value,
           brand: _brandController.text.trim().nullIfEmpty,
           ingredients: _ingredientsController.text.trim().nullIfEmpty,
           rating: _rating,
@@ -203,17 +189,17 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
             const SizedBox(height: 16),
 
             // Category dropdown
-            DropdownButtonFormField<String>(
+            DropdownButtonFormField<ProductCategory>(
               initialValue: _selectedCategory,
               decoration: InputDecoration(
                 labelText: l10n.productCategoryLabel,
                 border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.category_outlined),
               ),
-              items: productCategories.map((category) {
+              items: ProductCategory.values.map((category) {
                 return DropdownMenuItem(
                   value: category,
-                  child: Text(_formatCategory(category)),
+                  child: Text(category.displayName),
                 );
               }).toList(),
               onChanged: (value) {
@@ -313,17 +299,6 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
         ),
       ),
     );
-  }
-
-  String _formatCategory(String category) {
-    return category
-        .replaceAll('_', ' ')
-        .split(' ')
-        .map((word) {
-          if (word.isEmpty) return word;
-          return word[0].toUpperCase() + word.substring(1);
-        })
-        .join(' ');
   }
 }
 

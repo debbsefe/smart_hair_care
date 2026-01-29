@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/features/daily_log/providers/providers.dart';
 import 'package:smart_hair_care/features/daily_log/view/add_edit_log_page.dart';
@@ -155,20 +156,8 @@ class _MonthSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
+    final locale = Localizations.localeOf(context).toString();
+    final monthYearFormat = DateFormat.yMMMM(locale);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -180,7 +169,7 @@ class _MonthSelector extends StatelessWidget {
             onPressed: onPreviousMonth,
           ),
           Text(
-            '${months[selectedMonth.month - 1]} ${selectedMonth.year}',
+            monthYearFormat.format(selectedMonth),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
