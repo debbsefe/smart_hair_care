@@ -50,8 +50,9 @@ void main() {
     });
 
     test('handles load error', () async {
-      when(() => mockDao.getAllProducts())
-          .thenThrow(Exception('Database error'));
+      when(
+        () => mockDao.getAllProducts(),
+      ).thenThrow(Exception('Database error'));
 
       container.read(productsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -68,7 +69,9 @@ void main() {
       container.read(productsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      await container.read(productsProvider.notifier).addProduct(
+      await container
+          .read(productsProvider.notifier)
+          .addProduct(
             name: 'New Product',
             category: 'shampoo',
             brand: 'TestBrand',
@@ -94,8 +97,9 @@ void main() {
     test('toggles favorite successfully', () async {
       final product = ProductFixtures.shampoo();
       when(() => mockDao.getAllProducts()).thenAnswer((_) async => [product]);
-      when(() => mockDao.toggleFavorite(product.id, isFavorite: true))
-          .thenAnswer((_) async => 1);
+      when(
+        () => mockDao.toggleFavorite(product.id, isFavorite: true),
+      ).thenAnswer((_) async => 1);
 
       container.read(productsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -104,13 +108,15 @@ void main() {
           .read(productsProvider.notifier)
           .toggleFavorite(product.id, isFavorite: true);
 
-      verify(() => mockDao.toggleFavorite(product.id, isFavorite: true))
-          .called(1);
+      verify(
+        () => mockDao.toggleFavorite(product.id, isFavorite: true),
+      ).called(1);
     });
 
     test('clearError clears error state', () async {
-      when(() => mockDao.getAllProducts())
-          .thenThrow(Exception('Database error'));
+      when(
+        () => mockDao.getAllProducts(),
+      ).thenThrow(Exception('Database error'));
 
       container.read(productsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));

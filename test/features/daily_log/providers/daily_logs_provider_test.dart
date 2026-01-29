@@ -68,7 +68,9 @@ void main() {
       container.read(dailyLogsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      await container.read(dailyLogsProvider.notifier).addLog(
+      await container
+          .read(dailyLogsProvider.notifier)
+          .addLog(
             date: DailyLogFixtures.today,
             routineType: 'wash_day',
             productsUsed: '1,2',
@@ -95,8 +97,9 @@ void main() {
     test('loads logs for specific month', () async {
       final logs = DailyLogFixtures.sampleLogs();
       when(() => mockDao.getAllLogs()).thenAnswer((_) async => []);
-      when(() => mockDao.getLogsByDateRange(any(), any()))
-          .thenAnswer((_) async => logs);
+      when(
+        () => mockDao.getLogsByDateRange(any(), any()),
+      ).thenAnswer((_) async => logs);
 
       container.read(dailyLogsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));

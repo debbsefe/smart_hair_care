@@ -53,7 +53,9 @@ void main() {
     });
 
     test('getLogById returns log when exists', () async {
-      final id = await dao.insertLog(createTestLog(routineType: 'deep_condition'));
+      final id = await dao.insertLog(
+        createTestLog(routineType: 'deep_condition'),
+      );
 
       final log = await dao.getLogById(id);
 

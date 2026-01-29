@@ -81,7 +81,9 @@ void main() {
       container.read(hairProfileProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      await container.read(hairProfileProvider.notifier).saveProfile(
+      await container
+          .read(hairProfileProvider.notifier)
+          .saveProfile(
             hairType: '3b',
             porosity: 'high',
             density: 'medium',
@@ -98,7 +100,9 @@ void main() {
       container.read(hairProfileProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      await container.read(hairProfileProvider.notifier).saveProfile(
+      await container
+          .read(hairProfileProvider.notifier)
+          .saveProfile(
             hairType: '4a',
             porosity: 'low',
           );

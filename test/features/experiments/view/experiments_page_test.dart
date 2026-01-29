@@ -52,8 +52,9 @@ void main() {
 
     testWidgets('shows experiments when data exists', (tester) async {
       final experiments = ExperimentFixtures.sampleExperiments();
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => experiments);
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenAnswer((_) async => experiments);
 
       await tester.pumpApp(
         const ExperimentsPage(),
@@ -67,8 +68,9 @@ void main() {
 
     testWidgets('shows experiment status chip', (tester) async {
       final experiments = [ExperimentFixtures.activeExperiment()];
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => experiments);
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenAnswer((_) async => experiments);
 
       await tester.pumpApp(
         const ExperimentsPage(),

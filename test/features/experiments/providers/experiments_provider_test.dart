@@ -40,8 +40,9 @@ void main() {
 
     test('loads experiments successfully', () async {
       final experiments = ExperimentFixtures.sampleExperiments();
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => experiments);
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenAnswer((_) async => experiments);
 
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -53,8 +54,9 @@ void main() {
     });
 
     test('handles load error', () async {
-      when(() => mockDao.getAllExperiments())
-          .thenThrow(Exception('Database error'));
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenThrow(Exception('Database error'));
 
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -71,7 +73,9 @@ void main() {
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      await container.read(experimentsProvider.notifier).addExperiment(
+      await container
+          .read(experimentsProvider.notifier)
+          .addExperiment(
             name: 'New Experiment',
             hypothesis: 'Testing new products',
             startDate: DateTime(2026, 2),
@@ -83,10 +87,12 @@ void main() {
 
     test('deletes experiment successfully', () async {
       final experiment = ExperimentFixtures.activeExperiment();
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => [experiment]);
-      when(() => mockDao.deleteExperiment(experiment.id))
-          .thenAnswer((_) async => 1);
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenAnswer((_) async => [experiment]);
+      when(
+        () => mockDao.deleteExperiment(experiment.id),
+      ).thenAnswer((_) async => 1);
 
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -100,8 +106,9 @@ void main() {
 
     test('completes experiment successfully', () async {
       final experiment = ExperimentFixtures.activeExperiment();
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => [experiment]);
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenAnswer((_) async => [experiment]);
       when(
         () => mockDao.completeExperiment(
           experiment.id,
@@ -114,7 +121,9 @@ void main() {
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      await container.read(experimentsProvider.notifier).completeExperiment(
+      await container
+          .read(experimentsProvider.notifier)
+          .completeExperiment(
             id: experiment.id,
             results: 'Great results!',
             conclusion: 'It worked perfectly',
@@ -133,10 +142,12 @@ void main() {
 
     test('abandons experiment successfully', () async {
       final experiment = ExperimentFixtures.activeExperiment();
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => [experiment]);
-      when(() => mockDao.updateStatus(experiment.id, 'abandoned'))
-          .thenAnswer((_) async => 1);
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenAnswer((_) async => [experiment]);
+      when(
+        () => mockDao.updateStatus(experiment.id, 'abandoned'),
+      ).thenAnswer((_) async => 1);
 
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -163,8 +174,9 @@ void main() {
     });
 
     test('clearError clears error state', () async {
-      when(() => mockDao.getAllExperiments())
-          .thenThrow(Exception('Database error'));
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenThrow(Exception('Database error'));
 
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -202,8 +214,9 @@ void main() {
   group('filteredExperimentsProvider', () {
     test('returns active experiments by default', () async {
       final experiments = ExperimentFixtures.sampleExperiments();
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => experiments);
+      when(
+        () => mockDao.getAllExperiments(),
+      ).thenAnswer((_) async => experiments);
 
       container.read(experimentsProvider);
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -212,21 +225,24 @@ void main() {
       expect(filtered.every((e) => e.status == 'active'), isTrue);
     });
 
-    test('returns only completed experiments when filter is completed',
-        () async {
-      final experiments = ExperimentFixtures.sampleExperiments();
-      when(() => mockDao.getAllExperiments())
-          .thenAnswer((_) async => experiments);
+    test(
+      'returns only completed experiments when filter is completed',
+      () async {
+        final experiments = ExperimentFixtures.sampleExperiments();
+        when(
+          () => mockDao.getAllExperiments(),
+        ).thenAnswer((_) async => experiments);
 
-      container.read(experimentsProvider);
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+        container.read(experimentsProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      container
-          .read(experimentsProvider.notifier)
-          .setFilter(ExperimentStatus.completed);
+        container
+            .read(experimentsProvider.notifier)
+            .setFilter(ExperimentStatus.completed);
 
-      final filtered = container.read(filteredExperimentsProvider);
-      expect(filtered.every((e) => e.status == 'completed'), isTrue);
-    });
+        final filtered = container.read(filteredExperimentsProvider);
+        expect(filtered.every((e) => e.status == 'completed'), isTrue);
+      },
+    );
   });
 }
