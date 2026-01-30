@@ -1,4 +1,4 @@
-name: smart_hair_care.stg
+name: smart_hair_care stg release workflow
 
 on:
   push:
