@@ -5,11 +5,10 @@ import 'package:smart_hair_care/core/database/database.dart';
 
 /// Notifier for managing hair profile (Riverpod 3 AsyncNotifier)
 class HairProfileNotifier extends AsyncNotifier<HairProfile?> {
-  late final HairProfilesDao _dao;
+  HairProfilesDao get _dao => ref.watch(hairProfilesDaoProvider);
 
   @override
   Future<HairProfile?> build() async {
-    _dao = ref.watch(hairProfilesDaoProvider);
     return _dao.getProfile();
   }
 

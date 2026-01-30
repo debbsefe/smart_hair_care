@@ -6,11 +6,10 @@ import 'package:smart_hair_care/core/models/models.dart';
 
 /// Notifier for managing experiments (Riverpod 3 AsyncNotifier)
 class ExperimentsNotifier extends AsyncNotifier<List<Experiment>> {
-  late final ExperimentsDao _dao;
+  ExperimentsDao get _dao => ref.watch(experimentsDaoProvider);
 
   @override
   Future<List<Experiment>> build() async {
-    _dao = ref.watch(experimentsDaoProvider);
     return _dao.getAllExperiments();
   }
 

@@ -4,11 +4,10 @@ import 'package:smart_hair_care/core/core.dart';
 
 /// Notifier for managing daily logs (Riverpod 3 AsyncNotifier)
 class DailyLogsNotifier extends AsyncNotifier<List<DailyLog>> {
-  late final DailyLogsDao _dao;
+  DailyLogsDao get _dao => ref.watch(dailyLogsDaoProvider);
 
   @override
   Future<List<DailyLog>> build() async {
-    _dao = ref.watch(dailyLogsDaoProvider);
     return _dao.getAllLogs();
   }
 
