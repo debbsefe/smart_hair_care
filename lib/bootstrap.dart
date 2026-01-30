@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 
 /// Custom ProviderObserver for logging (Riverpod 3 API)
 final class AppProviderObserver extends ProviderObserver {
@@ -49,11 +51,8 @@ final class AppProviderObserver extends ProviderObserver {
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
-  };
-
-  // Add cross-flavor configuration here
+  // Initialize logging
+  _initializeLogging();
 
   runApp(
     ProviderScope(
@@ -61,4 +60,27 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       child: await builder(),
     ),
   );
+}
+
+void _initializeLogging() {
+  Logger.root.level = kDebugMode ? Level.ALL : Level.WARNING;
+  Logger.root.onRecord.listen(
+    (record) {
+      final logMessage =
+          '[${record.loggerName}] ${record.level.name}: '
+          '${record.time}: ${record.message}'
+          '${record.stackTrace != null ? '\n${record.stackTrace}' : ''}';
+      if (kDebugMode) {
+        print(logMessage);
+      }
+    },
+  );
+
+  FlutterError.onError = (details) {
+    Logger.root.severe(
+      details.exceptionAsString(),
+      details.exception,
+      details.stack,
+    );
+  };
 }

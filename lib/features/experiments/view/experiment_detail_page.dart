@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_hair_care/core/database/database.dart';
-import 'package:smart_hair_care/core/models/models.dart';
-import 'package:smart_hair_care/features/experiments/providers/providers.dart';
+import 'package:smart_hair_care/core/core.dart';
+import 'package:smart_hair_care/features/experiments/experiments.dart';
 import 'package:smart_hair_care/features/shared/utils/date_formatter.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 

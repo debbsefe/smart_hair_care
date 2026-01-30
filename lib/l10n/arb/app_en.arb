@@ -103,5 +103,12 @@
     "cancelButton": "Cancel",
     "deleteButton": "Delete",
     "nextButton": "Next",
-    "previousButton": "Previous"
+    "previousButton": "Previous",
+    "searchProductsTitle": "Search Products",
+    "searchProductsHint": "Search by product name or brand...",
+    "searchProductsEmpty": "Enter a product name or brand to search",
+    "searchProductsNoResults": "No products found",
+    "searchProductsError": "Failed to search products",
+    "searchProductsRetry": "Retry",
+    "searchOnline": "Search Online"
 }

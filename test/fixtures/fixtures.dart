@@ -23,12 +23,24 @@ class FakeHairProfilesCompanion extends Fake implements HairProfilesCompanion {}
 
 class FakeExperimentsCompanion extends Fake implements ExperimentsCompanion {}
 
+class FakeProduct extends Fake implements Product {}
+
+class FakeDailyLog extends Fake implements DailyLog {}
+
+class FakeHairProfile extends Fake implements HairProfile {}
+
+class FakeExperiment extends Fake implements Experiment {}
+
 /// Register fallback values for mocktail
 void registerFallbackValues() {
   registerFallbackValue(FakeProductsCompanion());
   registerFallbackValue(FakeDailyLogsCompanion());
   registerFallbackValue(FakeHairProfilesCompanion());
   registerFallbackValue(FakeExperimentsCompanion());
+  registerFallbackValue(FakeProduct());
+  registerFallbackValue(FakeDailyLog());
+  registerFallbackValue(FakeHairProfile());
+  registerFallbackValue(FakeExperiment());
   registerFallbackValue(DateTime.now());
 }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_hair_care/core/database/database.dart';
-import 'package:smart_hair_care/features/daily_log/providers/providers.dart';
+import 'package:smart_hair_care/features/daily_log/notifiers/notifiers.dart';
 import 'package:smart_hair_care/features/daily_log/view/add_edit_log_page.dart';
 import 'package:smart_hair_care/features/daily_log/view/log_detail_page.dart';
 import 'package:smart_hair_care/features/daily_log/widgets/widgets.dart';
@@ -31,7 +31,7 @@ class _DailyLogPageState extends ConsumerState<DailyLogPage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(dailyLogsProvider);
+    final logsAsync = ref.watch(dailyLogsProvider);
     final logsGrouped = ref.watch(logsGroupedByDateProvider);
     final l10n = context.l10n;
 
@@ -76,7 +76,14 @@ class _DailyLogPageState extends ConsumerState<DailyLogPage> {
 
           // Logs list
           Expanded(
-            child: _buildLogsList(context, state, logsGrouped),
+            child: logsAsync.when(
+              data: (logs) => _buildLogsList(context, logs, logsGrouped),
+              loading: () => const LoadingView(),
+              error: (error, _) => ErrorView(
+                message: error.toString(),
+                onRetry: () => ref.invalidate(dailyLogsProvider),
+              ),
+            ),
           ),
         ],
       ),
@@ -93,24 +100,13 @@ class _DailyLogPageState extends ConsumerState<DailyLogPage> {
 
   Widget _buildLogsList(
     BuildContext context,
-    DailyLogsState state,
+    List<DailyLog> logs,
     Map<DateTime, List<DailyLog>> logsGrouped,
   ) {
-    if (state.isLoading && state.logs.isEmpty) {
-      return const LoadingView();
-    }
-
-    if (state.error != null && state.logs.isEmpty) {
-      return ErrorView(
-        message: state.error!,
-        onRetry: () => ref.read(dailyLogsProvider.notifier).loadLogs(),
-      );
-    }
-
     // Filter logs based on selected date or show all for the month
     final displayLogs = _selectedDate != null
         ? logsGrouped[_selectedDate] ?? []
-        : state.logs.where((log) {
+        : logs.where((DailyLog log) {
             return log.date.year == _selectedMonth.year &&
                 log.date.month == _selectedMonth.month;
           }).toList();

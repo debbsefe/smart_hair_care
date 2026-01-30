@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/database/database.dart';
-import 'package:smart_hair_care/features/product_inventory/providers/providers.dart';
+import 'package:smart_hair_care/features/product_inventory/notifiers/notifiers.dart';
 
 /// A widget that allows selecting multiple products from inventory
 class ProductPicker extends ConsumerStatefulWidget {
@@ -65,9 +65,21 @@ class _ProductPickerState extends ConsumerState<ProductPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final productsState = ref.watch(productsProvider);
+    final productsAsync = ref.watch(productsProvider);
     final theme = Theme.of(context);
 
+    return productsAsync.when(
+      data: (products) => _buildContent(context, theme, products),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, _) => const Center(child: Text('Failed to load products')),
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    ThemeData theme,
+    List<Product> products,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -104,9 +116,7 @@ class _ProductPickerState extends ConsumerState<ProductPicker> {
             spacing: 8,
             runSpacing: 8,
             children: _selectedIds.map((id) {
-              final product = productsState.products
-                  .where((p) => p.id == id)
-                  .firstOrNull;
+              final product = products.where((p) => p.id == id).firstOrNull;
               return Chip(
                 avatar: const Icon(Icons.check, size: 18),
                 label: Text(product?.name ?? 'Product #$id'),
@@ -120,7 +130,7 @@ class _ProductPickerState extends ConsumerState<ProductPicker> {
 
         // Add products button
         OutlinedButton.icon(
-          onPressed: () => _showProductPicker(context, productsState.products),
+          onPressed: () => _showProductPicker(context, products),
           icon: const Icon(Icons.add),
           label: Text(
             _selectedIds.isEmpty ? 'Select Products' : 'Add More Products',

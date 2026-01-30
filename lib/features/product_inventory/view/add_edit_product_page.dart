@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/product_category.dart';
-import 'package:smart_hair_care/features/product_inventory/providers/providers.dart';
+import 'package:smart_hair_care/core/network/models/models.dart';
+import 'package:smart_hair_care/features/product_inventory/notifiers/notifiers.dart';
+import 'package:smart_hair_care/features/product_inventory/view/product_search_page.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 
 /// Page for adding or editing a product
@@ -142,6 +144,32 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
     }
   }
 
+  Future<void> _searchOnline() async {
+    final result = await Navigator.push<ApiProduct?>(
+      context,
+      ProductSearchPage.getRoute(),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        if (result.productName != null) {
+          _nameController.text = result.productName!;
+        }
+        if (result.brands != null) {
+          _brandController.text = result.brands!;
+        }
+        if (result.ingredientsText != null) {
+          _ingredientsController.text = result.ingredientsText!;
+        }
+        final imageUrl =
+            result.imageFrontUrl ?? result.imageUrl ?? result.imageSmallUrl;
+        if (imageUrl != null) {
+          _imageUrlController.text = imageUrl;
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -152,6 +180,14 @@ class _AddEditProductPageState extends ConsumerState<AddEditProductPage> {
         title: Text(
           widget.isEditing ? l10n.editProductTitle : l10n.addProductTitle,
         ),
+        actions: [
+          if (!widget.isEditing)
+            IconButton(
+              icon: const Icon(Icons.search),
+              tooltip: l10n.searchOnline,
+              onPressed: _searchOnline,
+            ),
+        ],
       ),
       body: Form(
         key: _formKey,

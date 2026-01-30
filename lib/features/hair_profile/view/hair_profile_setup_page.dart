@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/models/models.dart';
-import 'package:smart_hair_care/features/hair_profile/providers/providers.dart';
+import 'package:smart_hair_care/features/hair_profile/notifiers/notifiers.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 
 /// Page for setting up or editing the hair profile
@@ -54,7 +54,7 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
 
     // Pre-fill if editing
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final profile = ref.read(hairProfileProvider).profile;
+      final profile = ref.read(hairProfileProvider).value;
       if (profile != null && widget.isEditing) {
         _nameController.text = profile.name ?? '';
         _selectedHairType = HairType.fromValue(profile.hairType);

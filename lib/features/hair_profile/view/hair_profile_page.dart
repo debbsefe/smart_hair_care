@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/models.dart';
-import 'package:smart_hair_care/features/hair_profile/providers/providers.dart';
+import 'package:smart_hair_care/features/hair_profile/notifiers/notifiers.dart';
 import 'package:smart_hair_care/features/hair_profile/view/hair_profile_setup_page.dart';
 import 'package:smart_hair_care/features/shared/widgets/widgets.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
@@ -21,15 +21,14 @@ class HairProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(hairProfileProvider);
+    final profileAsync = ref.watch(hairProfileProvider);
     final l10n = context.l10n;
-    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.hairProfileTitle),
         actions: [
-          if (state.hasProfile)
+          if (profileAsync.value != null)
             IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () => Navigator.push(
@@ -39,32 +38,17 @@ class HairProfilePage extends ConsumerWidget {
             ),
         ],
       ),
-      body: _buildBody(context, ref, state, theme),
+      body: profileAsync.when(
+        data: (profile) => profile != null
+            ? _ProfileView(profile: profile)
+            : _EmptyProfileView(),
+        loading: () => const LoadingView(),
+        error: (error, _) => ErrorView(
+          message: error.toString(),
+          onRetry: () => ref.invalidate(hairProfileProvider),
+        ),
+      ),
     );
-  }
-
-  Widget _buildBody(
-    BuildContext context,
-    WidgetRef ref,
-    HairProfileState state,
-    ThemeData theme,
-  ) {
-    if (state.isLoading) {
-      return const LoadingView();
-    }
-
-    if (state.error != null) {
-      return ErrorView(
-        message: state.error!,
-        onRetry: () => ref.read(hairProfileProvider.notifier).loadProfile(),
-      );
-    }
-
-    if (!state.hasProfile) {
-      return _EmptyProfileView();
-    }
-
-    return _ProfileView(profile: state.profile!);
   }
 }
 

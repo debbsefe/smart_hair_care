@@ -8,31 +8,36 @@ environment:
   flutter: ^3.38.0
 
 dependencies:
-  # Database - Drift (SQLite)
+  dio: ^5.7.0
   drift: ^2.29.0
   drift_flutter: ^0.2.7
-  # Utilities
   equatable: ^2.0.5
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  # State Management - Riverpod 3
   flutter_riverpod: ^3.0.3
+  freezed_annotation: ^3.0.0
   intl: ^0.20.2
+  json_annotation: ^4.9.0
+  logging: ^1.2.0
   path: ^1.9.0
   path_provider: ^2.1.2
+  pretty_dio_logger: ^1.4.0
+  retrofit: ^4.4.1
   riverpod_annotation: ^4.0.0
   uuid: ^4.3.3
 
 dev_dependencies:
-  # Code generation
   build_runner: ^2.4.9
   custom_lint: ^0.8.0
   drift_dev: ^2.29.0
   flutter_test:
     sdk: flutter
+  freezed: ^3.0.4
+  json_serializable: ^6.9.3
   mocktail: ^1.0.4
+  retrofit_generator: ^10.2.1
   riverpod_generator: ^4.0.0+1
   riverpod_lint: ^3.0.3
   very_good_analysis: ^10.0.0
