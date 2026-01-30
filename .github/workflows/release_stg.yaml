@@ -1,0 +1,66 @@
+name: smart_hair_care.stg
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'lib/**'
+      - "pubspec.yaml"
+      - "pubspec.lock"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{github.event.after}}
+
+      - name: key.properties File
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'key.properties'
+          fileDir: './android'
+          encodedString: ${{ secrets.ANDROID_KEY_PROPERTIES }}
+
+      - name: upload-keystore.jks File
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'upload-keystore.jks'
+          fileDir: './android/app'
+          encodedString: ${{ secrets.ANDROID_UPLOAD_KEYSTORE }}
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: 'projects/127802605967/locations/global/workloadIdentityPools/github-debbsefe/providers/github'
+          service_account: 'fastlane-deploy@smart-hair-care-485910.iam.gserviceaccount.com'
+
+      - uses: subosito/flutter-action@v2.18.0
+        with:
+          channel: 'stable'
+          cache: true
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.1'
+          bundler-cache: true
+          working-directory: ./android
+
+      - name: Build Flutter appbundle
+        run: flutter build appbundle --flavor staging -t lib/main_staging.dart --build-number $GITHUB_RUN_NUMBER
+
+      - uses: maierj/fastlane-action@v3.1.0
+        name: Upload appbundle
+        with:
+          subdirectory: 'android/'
+          lane: 'stg'

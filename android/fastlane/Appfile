@@ -1,0 +1,4 @@
+# Use GOOGLE_APPLICATION_CREDENTIALS env var (set by CI) or local service account file
+json_key_file(ENV['GOOGLE_APPLICATION_CREDENTIALS'] || "fastlane/deploy_service_account.json")
+
+package_name("com.eferha.smart_hair_care")
