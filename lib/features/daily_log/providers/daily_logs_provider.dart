@@ -45,8 +45,8 @@ class DailyLogsNotifier extends Notifier<DailyLogsState> {
   @override
   DailyLogsState build() {
     _dao = ref.watch(dailyLogsDaoProvider);
-    // Defer loading to avoid reading state during build
-    unawaited(Future.microtask(_loadLogs));
+    // ignore: discarded_futures, load data after build completes
+    Future.microtask(_loadLogs);
     return const DailyLogsState(isLoading: true);
   }
 

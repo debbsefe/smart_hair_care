@@ -41,8 +41,8 @@ class ProductsNotifier extends Notifier<ProductsState> {
   @override
   ProductsState build() {
     _dao = ref.watch(productsDaoProvider);
-    // Defer loading to avoid reading state during build
-    unawaited(Future.microtask(_loadProducts));
+    // ignore: discarded_futures, load data after build completes
+    Future.microtask(_loadProducts);
     return const ProductsState(isLoading: true);
   }
 

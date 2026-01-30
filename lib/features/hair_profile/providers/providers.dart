@@ -1,1 +1,1 @@
-export 'hair_profile_provider.dart';
+export '../notifiers/notifiers.dart';

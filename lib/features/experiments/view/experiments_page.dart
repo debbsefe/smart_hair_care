@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/models.dart';
-import 'package:smart_hair_care/features/experiments/providers/providers.dart';
+import 'package:smart_hair_care/features/experiments/notifiers/notifiers.dart';
 import 'package:smart_hair_care/features/experiments/view/add_experiment_page.dart';
 import 'package:smart_hair_care/features/experiments/view/experiment_detail_page.dart';
 import 'package:smart_hair_care/features/experiments/widgets/widgets.dart';
@@ -23,7 +23,8 @@ class ExperimentsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(experimentsProvider);
+    final experimentsAsync = ref.watch(experimentsProvider);
+    final currentFilter = ref.watch(experimentsFilterProvider);
     final filteredExperiments = ref.watch(filteredExperimentsProvider);
     final l10n = context.l10n;
 
@@ -35,14 +36,26 @@ class ExperimentsPage extends ConsumerWidget {
         children: [
           // Filter tabs
           _FilterTabs(
-            currentFilter: state.filter,
+            currentFilter: currentFilter,
             onFilterChanged: (filter) =>
-                ref.read(experimentsProvider.notifier).setFilter(filter),
+                ref.read(experimentsFilterProvider.notifier).filter = filter,
           ),
 
           // Experiments list
           Expanded(
-            child: _buildBody(context, ref, state, filteredExperiments),
+            child: experimentsAsync.when(
+              data: (_) => _buildContent(
+                context,
+                ref,
+                filteredExperiments,
+                currentFilter,
+              ),
+              loading: () => const LoadingView(),
+              error: (error, _) => ErrorView(
+                message: error.toString(),
+                onRetry: () => ref.invalidate(experimentsProvider),
+              ),
+            ),
           ),
         ],
       ),
@@ -54,33 +67,22 @@ class ExperimentsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(
+  Widget _buildContent(
     BuildContext context,
     WidgetRef ref,
-    ExperimentsState state,
     List<Experiment> experiments,
+    ExperimentStatus filter,
   ) {
-    if (state.isLoading && state.experiments.isEmpty) {
-      return const LoadingView();
-    }
-
-    if (state.error != null && state.experiments.isEmpty) {
-      return ErrorView(
-        message: state.error!,
-        onRetry: () => ref.read(experimentsProvider.notifier).loadExperiments(),
-      );
-    }
-
     if (experiments.isEmpty) {
       return EmptyView(
         icon: Icons.science_outlined,
-        title: _getEmptyMessage(context, state.filter),
+        title: _getEmptyMessage(context, filter),
         subtitle: context.l10n.experimentsEmptyHint,
       );
     }
 
     return RefreshIndicator(
-      onRefresh: () => ref.read(experimentsProvider.notifier).loadExperiments(),
+      onRefresh: () => ref.refresh(experimentsProvider.future),
       child: ListView.builder(
         padding: const EdgeInsets.only(top: 8, bottom: 88),
         itemCount: experiments.length,

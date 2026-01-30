@@ -1,1 +1,1 @@
-export 'products_provider.dart';
+export '../notifiers/notifiers.dart';

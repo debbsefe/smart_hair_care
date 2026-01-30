@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_hair_care/features/product_inventory/providers/providers.dart';
+import 'package:smart_hair_care/core/database/database.dart';
+import 'package:smart_hair_care/features/product_inventory/notifiers/notifiers.dart';
 import 'package:smart_hair_care/features/product_inventory/view/add_edit_product_page.dart';
 import 'package:smart_hair_care/features/product_inventory/view/product_detail_page.dart';
 import 'package:smart_hair_care/features/product_inventory/widgets/widgets.dart';
@@ -21,7 +22,7 @@ class ProductsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(productsProvider);
+    final productsAsync = ref.watch(productsProvider);
     final l10n = context.l10n;
 
     return Scaffold(
@@ -34,7 +35,14 @@ class ProductsPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: _buildBody(context, ref, state),
+      body: productsAsync.when(
+        data: (products) => _buildContent(context, ref, products),
+        loading: () => const LoadingView(),
+        error: (error, _) => ErrorView(
+          message: error.toString(),
+          onRetry: () => ref.invalidate(productsProvider),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'products_fab',
         onPressed: () => Navigator.push(context, AddEditProductPage.getRoute()),
@@ -43,19 +51,12 @@ class ProductsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, WidgetRef ref, ProductsState state) {
-    if (state.isLoading && state.products.isEmpty) {
-      return const LoadingView();
-    }
-
-    if (state.error != null && state.products.isEmpty) {
-      return ErrorView(
-        message: state.error!,
-        onRetry: () => ref.read(productsProvider.notifier).loadProducts(),
-      );
-    }
-
-    if (state.products.isEmpty) {
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref,
+    List<Product> products,
+  ) {
+    if (products.isEmpty) {
       return EmptyView(
         icon: Icons.inventory_2_outlined,
         title: context.l10n.productsEmptyMessage,
@@ -64,12 +65,12 @@ class ProductsPage extends ConsumerWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: () => ref.read(productsProvider.notifier).loadProducts(),
+      onRefresh: () => ref.refresh(productsProvider.future),
       child: ListView.builder(
         padding: const EdgeInsets.only(top: 8, bottom: 88),
-        itemCount: state.products.length,
+        itemCount: products.length,
         itemBuilder: (context, index) {
-          final product = state.products[index];
+          final product = products[index];
           return ProductTile(
             product: product,
             onTap: () => Navigator.push(

@@ -21,19 +21,27 @@ class _ApiClient implements ApiClient {
 
   @override
   Future<ProductSearchResponse> searchBeautyProducts({
-    String? categoriesTags,
-    String? brandsTags,
     String? searchTerms,
+    String? tagType0,
+    String? tagContains0,
+    String? tag0,
     int? pageSize,
     int? page,
+    int searchSimple = 1,
+    String action = 'process',
+    int json = 1,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'categories_tags': categoriesTags,
-      r'brands_tags': brandsTags,
       r'search_terms': searchTerms,
+      r'tagtype_0': tagType0,
+      r'tag_contains_0': tagContains0,
+      r'tag_0': tag0,
       r'page_size': pageSize,
       r'page': page,
+      r'search_simple': searchSimple,
+      r'action': action,
+      r'json': json,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
@@ -42,7 +50,7 @@ class _ApiClient implements ApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/search',
+            '/cgi/search.pl',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -82,7 +90,7 @@ class _ApiClient implements ApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'https://world.openfoodfacts.org/api/v2/search',
+            'https://world.openfoodfacts.org/search',
             queryParameters: queryParameters,
             data: _data,
           )

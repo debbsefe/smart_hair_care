@@ -1,12 +1,11 @@
 /// API constants for network configuration.
 abstract final class ApiConstants {
-  /// Open Beauty Facts API base URL.
+  /// Open Beauty Facts API base URL (root domain for CGI endpoints).
   static const String openBeautyFactsBaseUrl =
-      'https://world.openbeautyfacts.org/api/v2';
+      'https://world.openbeautyfacts.org';
 
-  /// Open Food Facts API base URL (fallback for broader coverage).
-  static const String openFoodFactsBaseUrl =
-      'https://world.openfoodfacts.org/api/v2';
+  /// Open Food Facts API base URL (root domain for CGI endpoints).
+  static const String openFoodFactsBaseUrl = 'https://world.openfoodfacts.org';
 
   /// Connection timeout in milliseconds.
   static const int connectTimeout = 30000;

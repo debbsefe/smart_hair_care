@@ -46,8 +46,8 @@ class ExperimentsNotifier extends Notifier<ExperimentsState> {
   @override
   ExperimentsState build() {
     _dao = ref.watch(experimentsDaoProvider);
-    // Defer loading to avoid reading state during build
-    unawaited(Future.microtask(_loadExperiments));
+    // ignore: discarded_futures, load data after build completes
+    Future.microtask(_loadExperiments);
     return const ExperimentsState(isLoading: true);
   }
 

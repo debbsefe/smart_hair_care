@@ -9,10 +9,18 @@ part of 'product_search_response.dart';
 _ProductSearchResponse _$ProductSearchResponseFromJson(
   Map<String, dynamic> json,
 ) => _ProductSearchResponse(
-  count: (json['count'] as num?)?.toInt() ?? 0,
-  page: (json['page'] as num?)?.toInt() ?? 1,
-  pageCount: (json['page_count'] as num?)?.toInt() ?? 0,
-  pageSize: (json['page_size'] as num?)?.toInt() ?? 20,
+  count: json['count'] == null
+      ? 0
+      : const CustomIntConverter().fromJson(json['count']),
+  page: json['page'] == null
+      ? 1
+      : const CustomIntConverter().fromJson(json['page']),
+  pageCount: json['page_count'] == null
+      ? 0
+      : const CustomIntConverter().fromJson(json['page_count']),
+  pageSize: json['page_size'] == null
+      ? 20
+      : const CustomIntConverter().fromJson(json['page_size']),
   products:
       (json['products'] as List<dynamic>?)
           ?.map((e) => ApiProduct.fromJson(e as Map<String, dynamic>))
@@ -23,9 +31,9 @@ _ProductSearchResponse _$ProductSearchResponseFromJson(
 Map<String, dynamic> _$ProductSearchResponseToJson(
   _ProductSearchResponse instance,
 ) => <String, dynamic>{
-  'count': instance.count,
-  'page': instance.page,
-  'page_count': instance.pageCount,
-  'page_size': instance.pageSize,
+  'count': const CustomIntConverter().toJson(instance.count),
+  'page': const CustomIntConverter().toJson(instance.page),
+  'page_count': const CustomIntConverter().toJson(instance.pageCount),
+  'page_size': const CustomIntConverter().toJson(instance.pageSize),
   'products': instance.products,
 };

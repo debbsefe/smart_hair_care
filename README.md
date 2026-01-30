@@ -65,7 +65,7 @@ lib/
 - **Database**: [Drift](https://drift.simonbinder.eu/) - Type-safe SQLite with compile-time verification
 - **Navigation**: Navigator 1.0 with static `getRoute()` methods for each page
 - **Theming**: Material 3 with custom purple/mauve color scheme
-- **Localization**: flutter_localizations with ARB files (English & Spanish)
+- **Localization**: flutter_localizations with ARB files (English)
 - **Code Quality**: [very_good_analysis](https://pub.dev/packages/very_good_analysis) lint rules
 
 ---
@@ -147,14 +147,12 @@ This project relies on [flutter_localizations][flutter_localizations_link] and f
 ### Supported Locales
 
 - 🇺🇸 English (en)
-- 🇪🇸 Spanish (es)
 
 ### Adding Strings
 
 1. Open the `app_en.arb` file at `lib/l10n/arb/app_en.arb`
 2. Add a new key/value pair
-3. Add the corresponding translation to `app_es.arb`
-4. Use in code:
+3. Use in code:
 
 ```dart
 import 'package:smart_hair_care/l10n/l10n.dart';

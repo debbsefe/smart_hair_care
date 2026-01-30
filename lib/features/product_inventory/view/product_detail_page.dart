@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/database/database.dart';
-import 'package:smart_hair_care/features/product_inventory/providers/providers.dart';
+import 'package:smart_hair_care/features/product_inventory/notifiers/notifiers.dart';
 import 'package:smart_hair_care/features/product_inventory/view/add_edit_product_page.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 

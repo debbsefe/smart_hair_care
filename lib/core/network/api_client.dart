@@ -21,20 +21,24 @@ abstract class ApiClient {
 
   // ==================== Open Beauty Facts ====================
 
-  /// Search for beauty products by category, brand, or other criteria.
+  /// Search for beauty products by category, brand, or free text.
   ///
-  /// [categoriesTags] - Filter by category (e.g., "shampoo", "conditioner")
-  /// [brandsTags] - Filter by brand
-  /// [searchTerms] - Free text search
-  /// [pageSize] - Number of results per page (default: 20)
-  /// [page] - Page number (default: 1)
-  @GET('/search')
+  /// Uses the CGI search endpoint which supports free text search.
+  /// - `searchTerms` - Free text search query
+  /// - `tagType0` - Filter by tag type (e.g., "categories", "brands")
+  /// - `pageSize` - Number of results per page (default: 20)
+  /// - `page` - Page number (default: 1)
+  @GET('/cgi/search.pl')
   Future<ProductSearchResponse> searchBeautyProducts({
-    @Query('categories_tags') String? categoriesTags,
-    @Query('brands_tags') String? brandsTags,
     @Query('search_terms') String? searchTerms,
+    @Query('tagtype_0') String? tagType0,
+    @Query('tag_contains_0') String? tagContains0,
+    @Query('tag_0') String? tag0,
     @Query('page_size') int? pageSize,
     @Query('page') int? page,
+    @Query('search_simple') int searchSimple = 1,
+    @Query('action') String action = 'process',
+    @Query('json') int json = 1,
   });
 
   // ==================== Open Food Facts ====================

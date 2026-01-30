@@ -45,8 +45,8 @@ class HairProfileNotifier extends Notifier<HairProfileState> {
   @override
   HairProfileState build() {
     _dao = ref.watch(hairProfilesDaoProvider);
-    // Defer loading to avoid reading state during build
-    unawaited(Future.microtask(_loadProfile));
+    // ignore: discarded_futures, load data after build completes
+    Future.microtask(_loadProfile);
     return const HairProfileState(isLoading: true);
   }
 
