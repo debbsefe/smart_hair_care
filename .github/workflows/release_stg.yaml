@@ -6,8 +6,11 @@ on:
       - main
     paths:
       - 'lib/**'
-      - "pubspec.yaml"
-      - "pubspec.lock"
+      - 'android/**'
+      - 'ios/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/release_stg.yaml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
