@@ -27,7 +27,7 @@ dependencies:
 
 dev_dependencies:
   # Code generation
-  build_runner: ^2.4.9
+  build_runner: ^2.10.5
   custom_lint: ^0.8.0
   drift_dev: ^2.29.0
   flutter_test:
