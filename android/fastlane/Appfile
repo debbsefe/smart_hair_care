@@ -1,0 +1,2 @@
+json_key_file(ENV['GOOGLE_APPLICATION_CREDENTIALS'] || "deploy_service_account.json")
+package_name("com.eferha.smart_hair_care")
