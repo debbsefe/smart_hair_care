@@ -107,17 +107,17 @@ class ExperimentsFilterNotifier extends Notifier<ExperimentStatus> {
   @override
   ExperimentStatus build() => ExperimentStatus.active;
 
-  ExperimentStatus get filter => state;
-  set filter(ExperimentStatus value) => state = value;
+  // ignore: use_setters_to_change_properties
+  void setFilter(ExperimentStatus value) => state = value;
 }
 
 /// Provider for filtered experiments based on current filter
 final filteredExperimentsProvider = Provider<List<Experiment>>((ref) {
   final experimentsAsync = ref.watch(experimentsProvider);
-  final filter = ref.watch(experimentsFilterProvider);
+  final filterState = ref.watch(experimentsFilterProvider);
   return experimentsAsync.when(
     data: (experiments) =>
-        experiments.where((e) => e.status == filter.value).toList(),
+        experiments.where((e) => e.status == filterState.value).toList(),
     loading: () => [],
     error: (_, _) => [],
   );

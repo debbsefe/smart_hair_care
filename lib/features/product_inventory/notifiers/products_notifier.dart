@@ -5,12 +5,12 @@ import 'package:smart_hair_care/core/database/database.dart';
 
 /// Notifier for managing products (Riverpod 3 AsyncNotifier)
 class ProductsNotifier extends AsyncNotifier<List<Product>> {
-  late final ProductsDao _dao;
+  ProductsDao get _dao => ref.watch(productsDaoProvider);
 
   @override
   Future<List<Product>> build() async {
-    _dao = ref.watch(productsDaoProvider);
-    return _dao.getAllProducts();
+    final dao = ref.watch(productsDaoProvider);
+    return dao.getAllProducts();
   }
 
   Future<void> addProduct({

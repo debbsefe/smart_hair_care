@@ -149,8 +149,9 @@ void main() {
     });
 
     test('can change filter', () {
-      container.read(experimentsFilterProvider.notifier).filter =
-          ExperimentStatus.completed;
+      container
+          .read(experimentsFilterProvider.notifier)
+          .setFilter(ExperimentStatus.completed);
 
       final filter = container.read(experimentsFilterProvider);
       expect(filter, equals(ExperimentStatus.completed));
@@ -180,8 +181,9 @@ void main() {
       await container.read(experimentsProvider.future);
 
       // Change filter to completed
-      container.read(experimentsFilterProvider.notifier).filter =
-          ExperimentStatus.completed;
+      container
+          .read(experimentsFilterProvider.notifier)
+          .setFilter(ExperimentStatus.completed);
 
       final filtered = container.read(filteredExperimentsProvider);
       expect(filtered.every((e) => e.status == 'completed'), isTrue);

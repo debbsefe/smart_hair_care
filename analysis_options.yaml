@@ -7,9 +7,12 @@ analyzer:
   errors:
     # Freezed 3.x uses @JsonKey on constructor params which is valid
     invalid_annotation_target: ignore
+    document_ignores: ignore
 linter:
   rules:
     public_member_api_docs: false
     # FutureProvider.family returns an internal type (FutureProviderFamily)
     # that isn't exported from the public API
     specify_nonobvious_property_types: false
+plugins:
+  riverpod_lint: ^3.1.2

@@ -38,7 +38,7 @@ class ExperimentsPage extends ConsumerWidget {
           _FilterTabs(
             currentFilter: currentFilter,
             onFilterChanged: (filter) =>
-                ref.read(experimentsFilterProvider.notifier).filter = filter,
+                ref.read(experimentsFilterProvider.notifier).setFilter(filter),
           ),
 
           // Experiments list
