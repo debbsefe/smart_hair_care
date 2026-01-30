@@ -30,6 +30,7 @@ class _ApiClient implements ApiClient {
     int searchSimple = 1,
     String action = 'process',
     int json = 1,
+    CancelToken? cancelToken,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -53,6 +54,7 @@ class _ApiClient implements ApiClient {
             '/cgi/search.pl',
             queryParameters: queryParameters,
             data: _data,
+            cancelToken: cancelToken,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );

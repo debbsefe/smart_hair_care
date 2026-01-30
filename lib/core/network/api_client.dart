@@ -39,6 +39,7 @@ abstract class ApiClient {
     @Query('search_simple') int searchSimple = 1,
     @Query('action') String action = 'process',
     @Query('json') int json = 1,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   // ==================== Open Food Facts ====================

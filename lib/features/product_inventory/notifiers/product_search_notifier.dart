@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smart_hair_care/core/network/api_client.dart';
@@ -24,12 +25,14 @@ sealed class ProductSearchState with _$ProductSearchState {
 /// search requires debouncing which doesn't fit the AsyncNotifier pattern.
 class ProductSearchNotifier extends Notifier<ProductSearchState> {
   Timer? _debounceTimer;
+  CancelToken? _cancelToken;
   static const _debounceDuration = Duration(milliseconds: 400);
 
   @override
   ProductSearchState build() {
     ref.onDispose(() {
       _debounceTimer?.cancel();
+      _cancelToken?.cancel();
     });
     return const ProductSearchState();
   }
@@ -45,24 +48,36 @@ class ProductSearchNotifier extends Notifier<ProductSearchState> {
 
     state = state.copyWith(query: query, isLoading: true);
 
-    _debounceTimer = Timer(_debounceDuration, () {
-      // ignore: discarded_futures, intentionally fire-and-forget
-      _performSearch(query.trim());
+    _debounceTimer = Timer(_debounceDuration, () async {
+      _cancelToken?.cancel();
+      _cancelToken = CancelToken();
+      await _performSearch(query.trim(), _cancelToken!);
     });
   }
 
-  Future<void> _performSearch(String query) async {
+  Future<void> _performSearch(String query, CancelToken cancelToken) async {
     try {
       final apiClient = ref.read(apiClientProvider);
       final response = await apiClient.searchBeautyProducts(
         searchTerms: query,
         pageSize: 20,
         page: 1,
+        cancelToken: cancelToken,
       );
 
       state = state.copyWith(
         products: response.products,
         isLoading: false,
+      );
+    } on DioException catch (e) {
+      if (CancelToken.isCancel(e)) {
+        // request was cancelled, ignore
+        return;
+      }
+
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
       );
     } on Exception catch (e) {
       state = state.copyWith(
