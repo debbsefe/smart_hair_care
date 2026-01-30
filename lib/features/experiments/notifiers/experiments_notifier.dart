@@ -84,8 +84,8 @@ class ExperimentsNotifier extends AsyncNotifier<List<Experiment>> {
 /// Provider for experiments
 final experimentsProvider =
     AsyncNotifierProvider<ExperimentsNotifier, List<Experiment>>(
-  ExperimentsNotifier.new,
-);
+      ExperimentsNotifier.new,
+    );
 
 /// Provider for a single experiment by ID
 final experimentByIdProvider = FutureProvider.family<Experiment?, int>((
@@ -99,8 +99,8 @@ final experimentByIdProvider = FutureProvider.family<Experiment?, int>((
 /// Provider for current filter status
 final experimentsFilterProvider =
     NotifierProvider<ExperimentsFilterNotifier, ExperimentStatus>(
-  ExperimentsFilterNotifier.new,
-);
+      ExperimentsFilterNotifier.new,
+    );
 
 /// Simple notifier for filter state
 class ExperimentsFilterNotifier extends Notifier<ExperimentStatus> {

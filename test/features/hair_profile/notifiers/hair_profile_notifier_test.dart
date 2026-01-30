@@ -69,7 +69,9 @@ void main() {
 
       await container.read(hairProfileProvider.future);
 
-      await container.read(hairProfileProvider.notifier).saveProfile(
+      await container
+          .read(hairProfileProvider.notifier)
+          .saveProfile(
             name: 'My Hair',
             hairType: '3b',
           );
@@ -84,7 +86,9 @@ void main() {
 
       await container.read(hairProfileProvider.future);
 
-      await container.read(hairProfileProvider.notifier).saveProfile(
+      await container
+          .read(hairProfileProvider.notifier)
+          .saveProfile(
             name: 'Updated Name',
             hairType: '4a',
             porosity: 'low',
@@ -92,7 +96,6 @@ void main() {
 
       verify(() => mockDao.upsertProfile(any())).called(1);
     });
-
   });
 
   group('Derived Providers', () {

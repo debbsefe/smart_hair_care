@@ -61,7 +61,9 @@ void main() {
 
       await container.read(dailyLogsProvider.future);
 
-      await container.read(dailyLogsProvider.notifier).addLog(
+      await container
+          .read(dailyLogsProvider.notifier)
+          .addLog(
             date: DateTime.now(),
             routineType: 'wash_day',
           );

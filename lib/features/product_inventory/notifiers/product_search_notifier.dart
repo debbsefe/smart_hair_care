@@ -89,5 +89,5 @@ class ProductSearchNotifier extends Notifier<ProductSearchState> {
 /// Provider for product search
 final productSearchProvider =
     NotifierProvider<ProductSearchNotifier, ProductSearchState>(
-  ProductSearchNotifier.new,
-);
+      ProductSearchNotifier.new,
+    );

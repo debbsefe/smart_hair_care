@@ -111,7 +111,9 @@ void main() {
 
       await container.read(experimentsProvider.future);
 
-      await container.read(experimentsProvider.notifier).completeExperiment(
+      await container
+          .read(experimentsProvider.notifier)
+          .completeExperiment(
             id: 1,
             results: 'Good results',
             conclusion: 'Success',

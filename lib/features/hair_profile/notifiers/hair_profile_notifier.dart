@@ -54,8 +54,8 @@ class HairProfileNotifier extends AsyncNotifier<HairProfile?> {
 /// Provider for hair profile
 final hairProfileProvider =
     AsyncNotifierProvider<HairProfileNotifier, HairProfile?>(
-  HairProfileNotifier.new,
-);
+      HairProfileNotifier.new,
+    );
 
 /// Provider for checking if profile exists
 final hasHairProfileProvider = Provider<bool>((ref) {

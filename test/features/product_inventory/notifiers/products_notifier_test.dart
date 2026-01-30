@@ -64,7 +64,9 @@ void main() {
       // Wait for initial load
       await container.read(productsProvider.future);
 
-      await container.read(productsProvider.notifier).addProduct(
+      await container
+          .read(productsProvider.notifier)
+          .addProduct(
             name: 'New Product',
             category: 'shampoo',
             brand: 'TestBrand',
@@ -83,7 +85,9 @@ void main() {
       await container.read(productsProvider.future);
 
       final updatedProduct = products.first.copyWith(name: 'Updated Name');
-      await container.read(productsProvider.notifier).updateProduct(
+      await container
+          .read(productsProvider.notifier)
+          .updateProduct(
             updatedProduct,
           );
 
@@ -113,7 +117,9 @@ void main() {
 
       await container.read(productsProvider.future);
 
-      await container.read(productsProvider.notifier).toggleFavorite(
+      await container
+          .read(productsProvider.notifier)
+          .toggleFavorite(
             products.first.id,
             isFavorite: true,
           );
