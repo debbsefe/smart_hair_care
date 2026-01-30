@@ -16,10 +16,10 @@ T _$identity<T>(T value) => value;
 mixin _$ProductSearchResponse {
 
 /// Total count of products matching the search
-@CustomIntConverter() int get count;/// Current page number (API returns string or int)
-@CustomIntConverter() int get page;/// Number of products in the current page
-@JsonKey(name: 'page_count')@CustomIntConverter() int get pageCount;/// Page size
-@JsonKey(name: 'page_size')@CustomIntConverter() int get pageSize;/// List of products
+@CustomIntConverter() int? get count;/// Current page number (API returns string or int)
+@CustomIntConverter() int? get page;/// Number of products in the current page
+@JsonKey(name: 'page_count')@CustomIntConverter() int? get pageCount;/// Page size
+@JsonKey(name: 'page_size')@CustomIntConverter() int? get pageSize;/// List of products
  List<ApiProduct> get products;
 /// Create a copy of ProductSearchResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -53,7 +53,7 @@ abstract mixin class $ProductSearchResponseCopyWith<$Res>  {
   factory $ProductSearchResponseCopyWith(ProductSearchResponse value, $Res Function(ProductSearchResponse) _then) = _$ProductSearchResponseCopyWithImpl;
 @useResult
 $Res call({
-@CustomIntConverter() int count,@CustomIntConverter() int page,@JsonKey(name: 'page_count')@CustomIntConverter() int pageCount,@JsonKey(name: 'page_size')@CustomIntConverter() int pageSize, List<ApiProduct> products
+@CustomIntConverter() int? count,@CustomIntConverter() int? page,@JsonKey(name: 'page_count')@CustomIntConverter() int? pageCount,@JsonKey(name: 'page_size')@CustomIntConverter() int? pageSize, List<ApiProduct> products
 });
 
 
@@ -70,13 +70,13 @@ class _$ProductSearchResponseCopyWithImpl<$Res>
 
 /// Create a copy of ProductSearchResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? count = null,Object? page = null,Object? pageCount = null,Object? pageSize = null,Object? products = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? count = freezed,Object? page = freezed,Object? pageCount = freezed,Object? pageSize = freezed,Object? products = null,}) {
   return _then(_self.copyWith(
-count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
-as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as int,pageCount: null == pageCount ? _self.pageCount : pageCount // ignore: cast_nullable_to_non_nullable
-as int,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
-as int,products: null == products ? _self.products : products // ignore: cast_nullable_to_non_nullable
+count: freezed == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int?,page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,pageCount: freezed == pageCount ? _self.pageCount : pageCount // ignore: cast_nullable_to_non_nullable
+as int?,pageSize: freezed == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
+as int?,products: null == products ? _self.products : products // ignore: cast_nullable_to_non_nullable
 as List<ApiProduct>,
   ));
 }
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@CustomIntConverter()  int count, @CustomIntConverter()  int page, @JsonKey(name: 'page_count')@CustomIntConverter()  int pageCount, @JsonKey(name: 'page_size')@CustomIntConverter()  int pageSize,  List<ApiProduct> products)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@CustomIntConverter()  int? count, @CustomIntConverter()  int? page, @JsonKey(name: 'page_count')@CustomIntConverter()  int? pageCount, @JsonKey(name: 'page_size')@CustomIntConverter()  int? pageSize,  List<ApiProduct> products)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductSearchResponse() when $default != null:
 return $default(_that.count,_that.page,_that.pageCount,_that.pageSize,_that.products);case _:
@@ -180,7 +180,7 @@ return $default(_that.count,_that.page,_that.pageCount,_that.pageSize,_that.prod
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@CustomIntConverter()  int count, @CustomIntConverter()  int page, @JsonKey(name: 'page_count')@CustomIntConverter()  int pageCount, @JsonKey(name: 'page_size')@CustomIntConverter()  int pageSize,  List<ApiProduct> products)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@CustomIntConverter()  int? count, @CustomIntConverter()  int? page, @JsonKey(name: 'page_count')@CustomIntConverter()  int? pageCount, @JsonKey(name: 'page_size')@CustomIntConverter()  int? pageSize,  List<ApiProduct> products)  $default,) {final _that = this;
 switch (_that) {
 case _ProductSearchResponse():
 return $default(_that.count,_that.page,_that.pageCount,_that.pageSize,_that.products);}
@@ -197,7 +197,7 @@ return $default(_that.count,_that.page,_that.pageCount,_that.pageSize,_that.prod
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@CustomIntConverter()  int count, @CustomIntConverter()  int page, @JsonKey(name: 'page_count')@CustomIntConverter()  int pageCount, @JsonKey(name: 'page_size')@CustomIntConverter()  int pageSize,  List<ApiProduct> products)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@CustomIntConverter()  int? count, @CustomIntConverter()  int? page, @JsonKey(name: 'page_count')@CustomIntConverter()  int? pageCount, @JsonKey(name: 'page_size')@CustomIntConverter()  int? pageSize,  List<ApiProduct> products)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductSearchResponse() when $default != null:
 return $default(_that.count,_that.page,_that.pageCount,_that.pageSize,_that.products);case _:
@@ -216,13 +216,13 @@ class _ProductSearchResponse implements ProductSearchResponse {
   factory _ProductSearchResponse.fromJson(Map<String, dynamic> json) => _$ProductSearchResponseFromJson(json);
 
 /// Total count of products matching the search
-@override@JsonKey()@CustomIntConverter() final  int count;
+@override@JsonKey()@CustomIntConverter() final  int? count;
 /// Current page number (API returns string or int)
-@override@JsonKey()@CustomIntConverter() final  int page;
+@override@JsonKey()@CustomIntConverter() final  int? page;
 /// Number of products in the current page
-@override@JsonKey(name: 'page_count')@CustomIntConverter() final  int pageCount;
+@override@JsonKey(name: 'page_count')@CustomIntConverter() final  int? pageCount;
 /// Page size
-@override@JsonKey(name: 'page_size')@CustomIntConverter() final  int pageSize;
+@override@JsonKey(name: 'page_size')@CustomIntConverter() final  int? pageSize;
 /// List of products
  final  List<ApiProduct> _products;
 /// List of products
@@ -266,7 +266,7 @@ abstract mixin class _$ProductSearchResponseCopyWith<$Res> implements $ProductSe
   factory _$ProductSearchResponseCopyWith(_ProductSearchResponse value, $Res Function(_ProductSearchResponse) _then) = __$ProductSearchResponseCopyWithImpl;
 @override @useResult
 $Res call({
-@CustomIntConverter() int count,@CustomIntConverter() int page,@JsonKey(name: 'page_count')@CustomIntConverter() int pageCount,@JsonKey(name: 'page_size')@CustomIntConverter() int pageSize, List<ApiProduct> products
+@CustomIntConverter() int? count,@CustomIntConverter() int? page,@JsonKey(name: 'page_count')@CustomIntConverter() int? pageCount,@JsonKey(name: 'page_size')@CustomIntConverter() int? pageSize, List<ApiProduct> products
 });
 
 
@@ -283,13 +283,13 @@ class __$ProductSearchResponseCopyWithImpl<$Res>
 
 /// Create a copy of ProductSearchResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? count = null,Object? page = null,Object? pageCount = null,Object? pageSize = null,Object? products = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? count = freezed,Object? page = freezed,Object? pageCount = freezed,Object? pageSize = freezed,Object? products = null,}) {
   return _then(_ProductSearchResponse(
-count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
-as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as int,pageCount: null == pageCount ? _self.pageCount : pageCount // ignore: cast_nullable_to_non_nullable
-as int,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
-as int,products: null == products ? _self._products : products // ignore: cast_nullable_to_non_nullable
+count: freezed == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int?,page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,pageCount: freezed == pageCount ? _self.pageCount : pageCount // ignore: cast_nullable_to_non_nullable
+as int?,pageSize: freezed == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
+as int?,products: null == products ? _self._products : products // ignore: cast_nullable_to_non_nullable
 as List<ApiProduct>,
   ));
 }

@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_hair_care/core/database/daos/daily_logs_dao.dart';
-import 'package:smart_hair_care/core/database/database.dart';
+import 'package:smart_hair_care/core/core.dart';
 
 /// Notifier for managing daily logs (Riverpod 3 AsyncNotifier)
 class DailyLogsNotifier extends AsyncNotifier<List<DailyLog>> {
@@ -54,8 +53,8 @@ class DailyLogsNotifier extends AsyncNotifier<List<DailyLog>> {
 /// Provider for daily logs
 final dailyLogsProvider =
     AsyncNotifierProvider<DailyLogsNotifier, List<DailyLog>>(
-  DailyLogsNotifier.new,
-);
+      DailyLogsNotifier.new,
+    );
 
 /// Provider for a single log by ID
 final dailyLogByIdProvider = FutureProvider.family<DailyLog?, int>((
@@ -95,8 +94,10 @@ final logsGroupedByDateProvider = Provider<Map<DateTime, List<DailyLog>>>((
 });
 
 /// Provider for logs filtered by month
-final logsForMonthProvider =
-    FutureProvider.family<List<DailyLog>, DateTime>((ref, month) async {
+final logsForMonthProvider = FutureProvider.family<List<DailyLog>, DateTime>((
+  ref,
+  month,
+) async {
   final dao = ref.watch(dailyLogsDaoProvider);
   final startOfMonth = DateTime(month.year, month.month);
   final endOfMonth = DateTime(month.year, month.month + 1, 0, 23, 59, 59);

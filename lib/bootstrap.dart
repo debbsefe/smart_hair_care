@@ -75,4 +75,12 @@ void _initializeLogging() {
       }
     },
   );
+
+  FlutterError.onError = (details) {
+    Logger.root.severe(
+      details.exceptionAsString(),
+      details.exception,
+      details.stack,
+    );
+  };
 }
