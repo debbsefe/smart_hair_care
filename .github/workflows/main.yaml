@@ -1,4 +1,4 @@
-name: smart_cal
+name: smart_hair_care pull request checks
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
