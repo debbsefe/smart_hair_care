@@ -118,3 +118,4 @@ lib/l10n/gen/
 
 # Service account keys
 **/*service_account*.json
+**/report.xml
