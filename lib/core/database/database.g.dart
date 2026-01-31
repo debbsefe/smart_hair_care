@@ -1461,16 +1461,41 @@ class $HairProfilesTable extends HairProfiles
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _hairTypeMeta = const VerificationMeta(
-    'hairType',
+  static const VerificationMeta _primaryTypeMeta = const VerificationMeta(
+    'primaryType',
   );
   @override
-  late final GeneratedColumn<String> hairType = GeneratedColumn<String>(
-    'hair_type',
+  late final GeneratedColumn<String> primaryType = GeneratedColumn<String>(
+    'primary_type',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+  specificPatterns = GeneratedColumn<String>(
+    'specific_patterns',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  ).withConverter<List<String>>($HairProfilesTable.$converterspecificPatterns);
+  static const VerificationMeta _isMultiTexturedMeta = const VerificationMeta(
+    'isMultiTextured',
+  );
+  @override
+  late final GeneratedColumn<bool> isMultiTextured = GeneratedColumn<bool>(
+    'is_multi_textured',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_multi_textured" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
   );
   static const VerificationMeta _porosityMeta = const VerificationMeta(
     'porosity',
@@ -1593,7 +1618,9 @@ class $HairProfilesTable extends HairProfiles
   List<GeneratedColumn> get $columns => [
     id,
     name,
-    hairType,
+    primaryType,
+    specificPatterns,
+    isMultiTextured,
     porosity,
     density,
     thickness,
@@ -1626,10 +1653,22 @@ class $HairProfilesTable extends HairProfiles
         name.isAcceptableOrUnknown(data['name']!, _nameMeta),
       );
     }
-    if (data.containsKey('hair_type')) {
+    if (data.containsKey('primary_type')) {
       context.handle(
-        _hairTypeMeta,
-        hairType.isAcceptableOrUnknown(data['hair_type']!, _hairTypeMeta),
+        _primaryTypeMeta,
+        primaryType.isAcceptableOrUnknown(
+          data['primary_type']!,
+          _primaryTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_multi_textured')) {
+      context.handle(
+        _isMultiTexturedMeta,
+        isMultiTextured.isAcceptableOrUnknown(
+          data['is_multi_textured']!,
+          _isMultiTexturedMeta,
+        ),
       );
     }
     if (data.containsKey('porosity')) {
@@ -1718,10 +1757,20 @@ class $HairProfilesTable extends HairProfiles
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       ),
-      hairType: attachedDatabase.typeMapping.read(
+      primaryType: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}hair_type'],
+        data['${effectivePrefix}primary_type'],
       ),
+      specificPatterns: $HairProfilesTable.$converterspecificPatterns.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}specific_patterns'],
+        )!,
+      ),
+      isMultiTextured: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_multi_textured'],
+      )!,
       porosity: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}porosity'],
@@ -1769,12 +1818,17 @@ class $HairProfilesTable extends HairProfiles
   $HairProfilesTable createAlias(String alias) {
     return $HairProfilesTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<List<String>, String> $converterspecificPatterns =
+      const SpecificPatternsConverter();
 }
 
 class HairProfile extends DataClass implements Insertable<HairProfile> {
   final int id;
   final String? name;
-  final String? hairType;
+  final String? primaryType;
+  final List<String> specificPatterns;
+  final bool isMultiTextured;
   final String? porosity;
   final String? density;
   final String? thickness;
@@ -1788,7 +1842,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
   const HairProfile({
     required this.id,
     this.name,
-    this.hairType,
+    this.primaryType,
+    required this.specificPatterns,
+    required this.isMultiTextured,
     this.porosity,
     this.density,
     this.thickness,
@@ -1807,9 +1863,15 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
-    if (!nullToAbsent || hairType != null) {
-      map['hair_type'] = Variable<String>(hairType);
+    if (!nullToAbsent || primaryType != null) {
+      map['primary_type'] = Variable<String>(primaryType);
     }
+    {
+      map['specific_patterns'] = Variable<String>(
+        $HairProfilesTable.$converterspecificPatterns.toSql(specificPatterns),
+      );
+    }
+    map['is_multi_textured'] = Variable<bool>(isMultiTextured);
     if (!nullToAbsent || porosity != null) {
       map['porosity'] = Variable<String>(porosity);
     }
@@ -1841,9 +1903,11 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
     return HairProfilesCompanion(
       id: Value(id),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      hairType: hairType == null && nullToAbsent
+      primaryType: primaryType == null && nullToAbsent
           ? const Value.absent()
-          : Value(hairType),
+          : Value(primaryType),
+      specificPatterns: Value(specificPatterns),
+      isMultiTextured: Value(isMultiTextured),
       porosity: porosity == null && nullToAbsent
           ? const Value.absent()
           : Value(porosity),
@@ -1879,7 +1943,11 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
     return HairProfile(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String?>(json['name']),
-      hairType: serializer.fromJson<String?>(json['hairType']),
+      primaryType: serializer.fromJson<String?>(json['primaryType']),
+      specificPatterns: serializer.fromJson<List<String>>(
+        json['specificPatterns'],
+      ),
+      isMultiTextured: serializer.fromJson<bool>(json['isMultiTextured']),
       porosity: serializer.fromJson<String?>(json['porosity']),
       density: serializer.fromJson<String?>(json['density']),
       thickness: serializer.fromJson<String?>(json['thickness']),
@@ -1898,7 +1966,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String?>(name),
-      'hairType': serializer.toJson<String?>(hairType),
+      'primaryType': serializer.toJson<String?>(primaryType),
+      'specificPatterns': serializer.toJson<List<String>>(specificPatterns),
+      'isMultiTextured': serializer.toJson<bool>(isMultiTextured),
       'porosity': serializer.toJson<String?>(porosity),
       'density': serializer.toJson<String?>(density),
       'thickness': serializer.toJson<String?>(thickness),
@@ -1915,7 +1985,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
   HairProfile copyWith({
     int? id,
     Value<String?> name = const Value.absent(),
-    Value<String?> hairType = const Value.absent(),
+    Value<String?> primaryType = const Value.absent(),
+    List<String>? specificPatterns,
+    bool? isMultiTextured,
     Value<String?> porosity = const Value.absent(),
     Value<String?> density = const Value.absent(),
     Value<String?> thickness = const Value.absent(),
@@ -1929,7 +2001,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
   }) => HairProfile(
     id: id ?? this.id,
     name: name.present ? name.value : this.name,
-    hairType: hairType.present ? hairType.value : this.hairType,
+    primaryType: primaryType.present ? primaryType.value : this.primaryType,
+    specificPatterns: specificPatterns ?? this.specificPatterns,
+    isMultiTextured: isMultiTextured ?? this.isMultiTextured,
     porosity: porosity.present ? porosity.value : this.porosity,
     density: density.present ? density.value : this.density,
     thickness: thickness.present ? thickness.value : this.thickness,
@@ -1945,7 +2019,15 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
     return HairProfile(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      hairType: data.hairType.present ? data.hairType.value : this.hairType,
+      primaryType: data.primaryType.present
+          ? data.primaryType.value
+          : this.primaryType,
+      specificPatterns: data.specificPatterns.present
+          ? data.specificPatterns.value
+          : this.specificPatterns,
+      isMultiTextured: data.isMultiTextured.present
+          ? data.isMultiTextured.value
+          : this.isMultiTextured,
       porosity: data.porosity.present ? data.porosity.value : this.porosity,
       density: data.density.present ? data.density.value : this.density,
       thickness: data.thickness.present ? data.thickness.value : this.thickness,
@@ -1972,7 +2054,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
     return (StringBuffer('HairProfile(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('hairType: $hairType, ')
+          ..write('primaryType: $primaryType, ')
+          ..write('specificPatterns: $specificPatterns, ')
+          ..write('isMultiTextured: $isMultiTextured, ')
           ..write('porosity: $porosity, ')
           ..write('density: $density, ')
           ..write('thickness: $thickness, ')
@@ -1991,7 +2075,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
   int get hashCode => Object.hash(
     id,
     name,
-    hairType,
+    primaryType,
+    specificPatterns,
+    isMultiTextured,
     porosity,
     density,
     thickness,
@@ -2009,7 +2095,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
       (other is HairProfile &&
           other.id == this.id &&
           other.name == this.name &&
-          other.hairType == this.hairType &&
+          other.primaryType == this.primaryType &&
+          other.specificPatterns == this.specificPatterns &&
+          other.isMultiTextured == this.isMultiTextured &&
           other.porosity == this.porosity &&
           other.density == this.density &&
           other.thickness == this.thickness &&
@@ -2025,7 +2113,9 @@ class HairProfile extends DataClass implements Insertable<HairProfile> {
 class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
   final Value<int> id;
   final Value<String?> name;
-  final Value<String?> hairType;
+  final Value<String?> primaryType;
+  final Value<List<String>> specificPatterns;
+  final Value<bool> isMultiTextured;
   final Value<String?> porosity;
   final Value<String?> density;
   final Value<String?> thickness;
@@ -2039,7 +2129,9 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
   const HairProfilesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.hairType = const Value.absent(),
+    this.primaryType = const Value.absent(),
+    this.specificPatterns = const Value.absent(),
+    this.isMultiTextured = const Value.absent(),
     this.porosity = const Value.absent(),
     this.density = const Value.absent(),
     this.thickness = const Value.absent(),
@@ -2054,7 +2146,9 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
   HairProfilesCompanion.insert({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.hairType = const Value.absent(),
+    this.primaryType = const Value.absent(),
+    this.specificPatterns = const Value.absent(),
+    this.isMultiTextured = const Value.absent(),
     this.porosity = const Value.absent(),
     this.density = const Value.absent(),
     this.thickness = const Value.absent(),
@@ -2069,7 +2163,9 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
   static Insertable<HairProfile> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<String>? hairType,
+    Expression<String>? primaryType,
+    Expression<String>? specificPatterns,
+    Expression<bool>? isMultiTextured,
     Expression<String>? porosity,
     Expression<String>? density,
     Expression<String>? thickness,
@@ -2084,7 +2180,9 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (hairType != null) 'hair_type': hairType,
+      if (primaryType != null) 'primary_type': primaryType,
+      if (specificPatterns != null) 'specific_patterns': specificPatterns,
+      if (isMultiTextured != null) 'is_multi_textured': isMultiTextured,
       if (porosity != null) 'porosity': porosity,
       if (density != null) 'density': density,
       if (thickness != null) 'thickness': thickness,
@@ -2101,7 +2199,9 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
   HairProfilesCompanion copyWith({
     Value<int>? id,
     Value<String?>? name,
-    Value<String?>? hairType,
+    Value<String?>? primaryType,
+    Value<List<String>>? specificPatterns,
+    Value<bool>? isMultiTextured,
     Value<String?>? porosity,
     Value<String?>? density,
     Value<String?>? thickness,
@@ -2116,7 +2216,9 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
     return HairProfilesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      hairType: hairType ?? this.hairType,
+      primaryType: primaryType ?? this.primaryType,
+      specificPatterns: specificPatterns ?? this.specificPatterns,
+      isMultiTextured: isMultiTextured ?? this.isMultiTextured,
       porosity: porosity ?? this.porosity,
       density: density ?? this.density,
       thickness: thickness ?? this.thickness,
@@ -2139,8 +2241,18 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (hairType.present) {
-      map['hair_type'] = Variable<String>(hairType.value);
+    if (primaryType.present) {
+      map['primary_type'] = Variable<String>(primaryType.value);
+    }
+    if (specificPatterns.present) {
+      map['specific_patterns'] = Variable<String>(
+        $HairProfilesTable.$converterspecificPatterns.toSql(
+          specificPatterns.value,
+        ),
+      );
+    }
+    if (isMultiTextured.present) {
+      map['is_multi_textured'] = Variable<bool>(isMultiTextured.value);
     }
     if (porosity.present) {
       map['porosity'] = Variable<String>(porosity.value);
@@ -2180,7 +2292,9 @@ class HairProfilesCompanion extends UpdateCompanion<HairProfile> {
     return (StringBuffer('HairProfilesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('hairType: $hairType, ')
+          ..write('primaryType: $primaryType, ')
+          ..write('specificPatterns: $specificPatterns, ')
+          ..write('isMultiTextured: $isMultiTextured, ')
           ..write('porosity: $porosity, ')
           ..write('density: $density, ')
           ..write('thickness: $thickness, ')
@@ -2882,7 +2996,9 @@ typedef $$HairProfilesTableCreateCompanionBuilder =
     HairProfilesCompanion Function({
       Value<int> id,
       Value<String?> name,
-      Value<String?> hairType,
+      Value<String?> primaryType,
+      Value<List<String>> specificPatterns,
+      Value<bool> isMultiTextured,
       Value<String?> porosity,
       Value<String?> density,
       Value<String?> thickness,
@@ -2898,7 +3014,9 @@ typedef $$HairProfilesTableUpdateCompanionBuilder =
     HairProfilesCompanion Function({
       Value<int> id,
       Value<String?> name,
-      Value<String?> hairType,
+      Value<String?> primaryType,
+      Value<List<String>> specificPatterns,
+      Value<bool> isMultiTextured,
       Value<String?> porosity,
       Value<String?> density,
       Value<String?> thickness,
@@ -2930,8 +3048,19 @@ class $$HairProfilesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get hairType => $composableBuilder(
-    column: $table.hairType,
+  ColumnFilters<String> get primaryType => $composableBuilder(
+    column: $table.primaryType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+  get specificPatterns => $composableBuilder(
+    column: $table.specificPatterns,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<bool> get isMultiTextured => $composableBuilder(
+    column: $table.isMultiTextured,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3005,8 +3134,18 @@ class $$HairProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get hairType => $composableBuilder(
-    column: $table.hairType,
+  ColumnOrderings<String> get primaryType => $composableBuilder(
+    column: $table.primaryType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get specificPatterns => $composableBuilder(
+    column: $table.specificPatterns,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isMultiTextured => $composableBuilder(
+    column: $table.isMultiTextured,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3076,8 +3215,21 @@ class $$HairProfilesTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get hairType =>
-      $composableBuilder(column: $table.hairType, builder: (column) => column);
+  GeneratedColumn<String> get primaryType => $composableBuilder(
+    column: $table.primaryType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get specificPatterns =>
+      $composableBuilder(
+        column: $table.specificPatterns,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<bool> get isMultiTextured => $composableBuilder(
+    column: $table.isMultiTextured,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get porosity =>
       $composableBuilder(column: $table.porosity, builder: (column) => column);
@@ -3151,7 +3303,9 @@ class $$HairProfilesTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String?> name = const Value.absent(),
-                Value<String?> hairType = const Value.absent(),
+                Value<String?> primaryType = const Value.absent(),
+                Value<List<String>> specificPatterns = const Value.absent(),
+                Value<bool> isMultiTextured = const Value.absent(),
                 Value<String?> porosity = const Value.absent(),
                 Value<String?> density = const Value.absent(),
                 Value<String?> thickness = const Value.absent(),
@@ -3165,7 +3319,9 @@ class $$HairProfilesTableTableManager
               }) => HairProfilesCompanion(
                 id: id,
                 name: name,
-                hairType: hairType,
+                primaryType: primaryType,
+                specificPatterns: specificPatterns,
+                isMultiTextured: isMultiTextured,
                 porosity: porosity,
                 density: density,
                 thickness: thickness,
@@ -3181,7 +3337,9 @@ class $$HairProfilesTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String?> name = const Value.absent(),
-                Value<String?> hairType = const Value.absent(),
+                Value<String?> primaryType = const Value.absent(),
+                Value<List<String>> specificPatterns = const Value.absent(),
+                Value<bool> isMultiTextured = const Value.absent(),
                 Value<String?> porosity = const Value.absent(),
                 Value<String?> density = const Value.absent(),
                 Value<String?> thickness = const Value.absent(),
@@ -3195,7 +3353,9 @@ class $$HairProfilesTableTableManager
               }) => HairProfilesCompanion.insert(
                 id: id,
                 name: name,
-                hairType: hairType,
+                primaryType: primaryType,
+                specificPatterns: specificPatterns,
+                isMultiTextured: isMultiTextured,
                 porosity: porosity,
                 density: density,
                 thickness: thickness,

@@ -73,7 +73,8 @@ void main() {
           .read(hairProfileProvider.notifier)
           .saveProfile(
             name: 'My Hair',
-            hairType: '3b',
+            primaryType: 'curly',
+            specificPatterns: ['3B'],
           );
 
       verify(() => mockDao.upsertProfile(any())).called(1);
@@ -90,7 +91,8 @@ void main() {
           .read(hairProfileProvider.notifier)
           .saveProfile(
             name: 'Updated Name',
-            hairType: '4a',
+            primaryType: 'coily',
+            specificPatterns: ['4A'],
             porosity: 'low',
           );
 

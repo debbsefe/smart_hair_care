@@ -108,7 +108,9 @@ class HairProfileFixtures {
   static HairProfile curlyProfile() => HairProfile(
     id: 1,
     name: 'My Curly Hair',
-    hairType: '3b',
+    primaryType: 'curly',
+    specificPatterns: const ['3B'],
+    isMultiTextured: false,
     porosity: 'high',
     density: 'medium',
     isColorTreated: false,

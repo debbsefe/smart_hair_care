@@ -37,4 +37,21 @@ class HairProfilesDao extends DatabaseAccessor<AppDatabase>
   // Delete operations
   Future<int> deleteProfile(int id) =>
       (delete(hairProfiles)..where((p) => p.id.equals(id))).go();
+
+  /// Update curl pattern selection (primary type + specific patterns)
+  Future<void> updateCurlPatterns({
+    required int profileId,
+    required String? primaryType,
+    required List<String> specificPatterns,
+  }) async {
+    final isMulti = specificPatterns.length > 1;
+    await (update(hairProfiles)..where((p) => p.id.equals(profileId))).write(
+      HairProfilesCompanion(
+        primaryType: Value(primaryType),
+        specificPatterns: Value(specificPatterns),
+        isMultiTextured: Value(isMulti),
+        lastUpdated: Value(DateTime.now()),
+      ),
+    );
+  }
 }

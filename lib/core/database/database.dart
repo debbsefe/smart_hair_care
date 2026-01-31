@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smart_hair_care/core/database/converters/specific_patterns_converter.dart';
 import 'package:smart_hair_care/core/database/daos/daos.dart';
 import 'package:smart_hair_care/core/database/tables/tables.dart';
 
@@ -18,7 +19,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'smart_hair_care.db');
@@ -31,7 +32,11 @@ class AppDatabase extends _$AppDatabase {
         await m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        // Handle migrations here as schema evolves
+        // During active development, drop and recreate all tables
+        for (final table in allTables) {
+          await m.deleteTable(table.actualTableName);
+        }
+        await m.createAll();
       },
       beforeOpen: (details) async {
         // Enable foreign keys

@@ -19,11 +19,13 @@ void main() {
 
   HairProfilesCompanion createTestProfile({
     String? name,
-    String? hairType,
+    String? primaryType,
   }) {
     return HairProfilesCompanion.insert(
       name: name != null ? Value(name) : const Value.absent(),
-      hairType: hairType != null ? Value(hairType) : const Value.absent(),
+      primaryType: primaryType != null
+          ? Value(primaryType)
+          : const Value.absent(),
     );
   }
 

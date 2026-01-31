@@ -1,29 +1,45 @@
-/// Hair type options (Andre Walker hair typing system)
-enum HairType {
-  type1a('1a', 'Type 1A - Straight (Fine)'),
-  type1b('1b', 'Type 1B - Straight (Medium)'),
-  type1c('1c', 'Type 1C - Straight (Coarse)'),
-  type2a('2a', 'Type 2A - Wavy (Fine)'),
-  type2b('2b', 'Type 2B - Wavy (Medium)'),
-  type2c('2c', 'Type 2C - Wavy (Coarse)'),
-  type3a('3a', 'Type 3A - Curly (Loose)'),
-  type3b('3b', 'Type 3B - Curly (Tight)'),
-  type3c('3c', 'Type 3C - Curly (Corkscrew)'),
-  type4a('4a', 'Type 4A - Coily (S-pattern)'),
-  type4b('4b', 'Type 4B - Coily (Z-pattern)'),
-  type4c('4c', 'Type 4C - Coily (Tight)')
+/// Hair pattern bucket categories (high-level grouping)
+enum HairPatternBucket {
+  straight('straight', 'Straight'),
+  wavy('wavy', 'Wavy'),
+  curly('curly', 'Curly'),
+  coily('coily', 'Coily')
   ;
 
-  const HairType(this.value, this.label);
+  const HairPatternBucket(this.value, this.label);
   final String value;
   final String label;
 
-  static HairType? fromValue(String? value) {
+  /// Get sub-types for this bucket
+  List<String> get subTypes {
+    switch (this) {
+      case HairPatternBucket.straight:
+        return ['1A', '1B', '1C'];
+      case HairPatternBucket.wavy:
+        return ['2A', '2B', '2C'];
+      case HairPatternBucket.curly:
+        return ['3A', '3B', '3C'];
+      case HairPatternBucket.coily:
+        return ['4A', '4B', '4C'];
+    }
+  }
+
+  static HairPatternBucket? fromValue(String? value) {
     if (value == null) return null;
-    return HairType.values.firstWhere(
+    return HairPatternBucket.values.firstWhere(
       (e) => e.value == value,
-      orElse: () => HairType.type1a,
+      orElse: () => HairPatternBucket.straight,
     );
+  }
+
+  /// Get bucket from a specific pattern (e.g., "3A" -> Curly)
+  static HairPatternBucket? fromPattern(String pattern) {
+    final normalized = pattern.toUpperCase();
+    if (normalized.startsWith('1')) return HairPatternBucket.straight;
+    if (normalized.startsWith('2')) return HairPatternBucket.wavy;
+    if (normalized.startsWith('3')) return HairPatternBucket.curly;
+    if (normalized.startsWith('4')) return HairPatternBucket.coily;
+    return null;
   }
 }
 
