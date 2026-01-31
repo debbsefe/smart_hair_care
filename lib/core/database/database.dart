@@ -8,8 +8,8 @@ part 'database.g.dart';
 
 /// Main database class for the Smart Hair Care app
 @DriftDatabase(
-  tables: [Products, DailyLogs, HairProfiles, Experiments],
-  daos: [ProductsDao, DailyLogsDao, HairProfilesDao, ExperimentsDao],
+  tables: [Products, DailyLogs, HairProfiles],
+  daos: [ProductsDao, DailyLogsDao, HairProfilesDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -59,8 +59,4 @@ final dailyLogsDaoProvider = Provider<DailyLogsDao>((ref) {
 
 final hairProfilesDaoProvider = Provider<HairProfilesDao>((ref) {
   return ref.watch(databaseProvider).hairProfilesDao;
-});
-
-final experimentsDaoProvider = Provider<ExperimentsDao>((ref) {
-  return ref.watch(databaseProvider).experimentsDao;
 });

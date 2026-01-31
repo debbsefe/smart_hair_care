@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/features/daily_log/daily_log.dart';
-import 'package:smart_hair_care/features/experiments/experiments.dart';
+// experiments feature removed for MVP
 import 'package:smart_hair_care/features/hair_profile/hair_profile.dart';
 import 'package:smart_hair_care/features/product_inventory/product_inventory.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
@@ -44,7 +44,6 @@ class HomePage extends ConsumerWidget {
           ProductsPage(),
           DailyLogPage(),
           HairProfilePage(),
-          ExperimentsPage(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -67,11 +66,6 @@ class HomePage extends ConsumerWidget {
             icon: const Icon(Icons.person_outline),
             selectedIcon: const Icon(Icons.person),
             label: l10n.navProfile,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.science_outlined),
-            selectedIcon: const Icon(Icons.science),
-            label: l10n.navExperiments,
           ),
         ],
       ),

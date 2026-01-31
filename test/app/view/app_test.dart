@@ -13,21 +13,16 @@ void main() {
   late MockProductsDao mockProductsDao;
   late MockDailyLogsDao mockDailyLogsDao;
   late MockHairProfilesDao mockHairProfilesDao;
-  late MockExperimentsDao mockExperimentsDao;
 
   setUp(() {
     mockProductsDao = MockProductsDao();
     mockDailyLogsDao = MockDailyLogsDao();
     mockHairProfilesDao = MockHairProfilesDao();
-    mockExperimentsDao = MockExperimentsDao();
 
     // Setup default behaviors
     when(() => mockProductsDao.getAllProducts()).thenAnswer((_) async => []);
     when(() => mockDailyLogsDao.getAllLogs()).thenAnswer((_) async => []);
     when(() => mockHairProfilesDao.getProfile()).thenAnswer((_) async => null);
-    when(
-      () => mockExperimentsDao.getAllExperiments(),
-    ).thenAnswer((_) async => []);
   });
 
   group('App', () {
@@ -38,7 +33,6 @@ void main() {
           productsDaoProvider.overrideWithValue(mockProductsDao),
           dailyLogsDaoProvider.overrideWithValue(mockDailyLogsDao),
           hairProfilesDaoProvider.overrideWithValue(mockHairProfilesDao),
-          experimentsDaoProvider.overrideWithValue(mockExperimentsDao),
         ],
       );
       await tester.pumpAndSettle();
