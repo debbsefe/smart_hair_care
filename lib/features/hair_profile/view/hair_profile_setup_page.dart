@@ -35,7 +35,8 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
 
   // Form values
   late TextEditingController _nameController;
-  HairType? _selectedHairType;
+  HairPatternBucket? _selectedBucket;
+  Set<String> _selectedPatterns = {};
   Porosity? _selectedPorosity;
   Density? _selectedDensity;
   Thickness? _selectedThickness;
@@ -57,7 +58,8 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
       final profile = ref.read(hairProfileProvider).value;
       if (profile != null && widget.isEditing) {
         _nameController.text = profile.name ?? '';
-        _selectedHairType = HairType.fromValue(profile.hairType);
+        _selectedBucket = HairPatternBucket.fromValue(profile.primaryType);
+        _selectedPatterns = Set<String>.from(profile.specificPatterns);
         _selectedPorosity = Porosity.fromValue(profile.porosity);
         _selectedDensity = Density.fromValue(profile.density);
         _selectedThickness = Thickness.fromValue(profile.thickness);
@@ -113,7 +115,8 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
           .read(hairProfileProvider.notifier)
           .saveProfile(
             name: _nameController.text.trim().nullIfEmpty,
-            hairType: _selectedHairType?.value,
+            primaryType: _selectedBucket?.value,
+            specificPatterns: _selectedPatterns.toList(),
             porosity: _selectedPorosity?.value,
             density: _selectedDensity?.value,
             thickness: _selectedThickness?.value,
@@ -178,10 +181,26 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
                   onHeatDamagedChanged: (v) =>
                       setState(() => _isHeatDamaged = v),
                 ),
-                _HairTypeStep(
-                  selectedType: _selectedHairType,
-                  onTypeSelected: (type) =>
-                      setState(() => _selectedHairType = type),
+                _HairPatternStep(
+                  selectedBucket: _selectedBucket,
+                  selectedPatterns: _selectedPatterns,
+                  onBucketSelected: (bucket) {
+                    setState(() {
+                      if (_selectedBucket != bucket) {
+                        _selectedBucket = bucket;
+                        _selectedPatterns = {};
+                      }
+                    });
+                  },
+                  onPatternToggled: (pattern) {
+                    setState(() {
+                      if (_selectedPatterns.contains(pattern)) {
+                        _selectedPatterns.remove(pattern);
+                      } else if (_selectedPatterns.length < 2) {
+                        _selectedPatterns.add(pattern);
+                      }
+                    });
+                  },
                 ),
                 _CharacteristicsStep(
                   porosity: _selectedPorosity,
@@ -336,14 +355,18 @@ class _BasicInfoStep extends StatelessWidget {
   }
 }
 
-class _HairTypeStep extends StatelessWidget {
-  const _HairTypeStep({
-    required this.selectedType,
-    required this.onTypeSelected,
+class _HairPatternStep extends StatelessWidget {
+  const _HairPatternStep({
+    required this.selectedBucket,
+    required this.selectedPatterns,
+    required this.onBucketSelected,
+    required this.onPatternToggled,
   });
 
-  final HairType? selectedType;
-  final ValueChanged<HairType> onTypeSelected;
+  final HairPatternBucket? selectedBucket;
+  final Set<String> selectedPatterns;
+  final ValueChanged<HairPatternBucket> onBucketSelected;
+  final ValueChanged<String> onPatternToggled;
 
   @override
   Widget build(BuildContext context) {
@@ -367,23 +390,128 @@ class _HairTypeStep extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          ...HairType.values.map((type) {
-            final isSelected = selectedType == type;
-            return Card(
-              margin: const EdgeInsets.only(bottom: 8),
-              color: isSelected ? theme.colorScheme.primaryContainer : null,
-              child: ListTile(
-                title: Text(type.label),
-                trailing: isSelected
-                    ? Icon(Icons.check_circle, color: theme.colorScheme.primary)
-                    : null,
-                onTap: () => onTypeSelected(type),
+
+          // Bucket cards (2x2 grid)
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 1.3,
+            children: HairPatternBucket.values.map((bucket) {
+              final isSelected = selectedBucket == bucket;
+              return _BucketCard(
+                bucket: bucket,
+                isSelected: isSelected,
+                onTap: () => onBucketSelected(bucket),
+              );
+            }).toList(),
+          ),
+
+          // Progressive disclosure: Refine section
+          if (selectedBucket != null) ...[
+            const SizedBox(height: 32),
+            Text(
+              'Refine your pattern (Optional)',
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Select up to 2 patterns if you have multi-textured hair',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
-            );
-          }),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: selectedBucket!.subTypes.map((pattern) {
+                final isSelected = selectedPatterns.contains(pattern);
+                final canSelect = selectedPatterns.length < 2 || isSelected;
+
+                return FilterChip(
+                  label: Text(pattern),
+                  selected: isSelected,
+                  onSelected: canSelect
+                      ? (_) => onPatternToggled(pattern)
+                      : null,
+                  selectedColor: theme.colorScheme.primaryContainer,
+                );
+              }).toList(),
+            ),
+          ],
         ],
       ),
     );
+  }
+}
+
+class _BucketCard extends StatelessWidget {
+  const _BucketCard({
+    required this.bucket,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final HairPatternBucket bucket;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: isSelected ? 4 : 1,
+      color: isSelected ? theme.colorScheme.primaryContainer : null,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                _getIconForBucket(bucket),
+                size: 32,
+                color: isSelected
+                    ? theme.colorScheme.onPrimaryContainer
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                bucket.label,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: isSelected
+                      ? theme.colorScheme.onPrimaryContainer
+                      : null,
+                  fontWeight: isSelected ? FontWeight.bold : null,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              if (isSelected)
+                Icon(
+                  Icons.check_circle,
+                  size: 20,
+                  color: theme.colorScheme.primary,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconData _getIconForBucket(HairPatternBucket bucket) {
+    return switch (bucket) {
+      HairPatternBucket.straight => Icons.horizontal_rule,
+      HairPatternBucket.wavy => Icons.waves,
+      HairPatternBucket.curly => Icons.gesture,
+      HairPatternBucket.coily => Icons.all_inclusive,
+    };
   }
 }
 

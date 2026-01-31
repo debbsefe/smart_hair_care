@@ -14,7 +14,8 @@ class HairProfileNotifier extends AsyncNotifier<HairProfile?> {
 
   Future<void> saveProfile({
     String? name,
-    String? hairType,
+    String? primaryType,
+    List<String>? specificPatterns,
     String? porosity,
     String? density,
     String? thickness,
@@ -25,10 +26,13 @@ class HairProfileNotifier extends AsyncNotifier<HairProfile?> {
     bool? isColorTreated,
     bool? isHeatDamaged,
   }) async {
+    final isMultiTextured = (specificPatterns?.length ?? 0) > 1;
     await _dao.upsertProfile(
       HairProfilesCompanion(
         name: Value(name),
-        hairType: Value(hairType),
+        primaryType: Value(primaryType),
+        specificPatterns: Value(specificPatterns ?? []),
+        isMultiTextured: Value(isMultiTextured),
         porosity: Value(porosity),
         density: Value(density),
         thickness: Value(thickness),

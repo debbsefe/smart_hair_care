@@ -109,7 +109,8 @@ class _ProfileView extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = context.l10n;
 
-    final hairType = HairType.fromValue(profile.hairType);
+    final bucket = HairPatternBucket.fromValue(profile.primaryType);
+    final patterns = profile.specificPatterns;
     final porosity = Porosity.fromValue(profile.porosity);
     final density = Density.fromValue(profile.density);
     final thickness = Thickness.fromValue(profile.thickness);
@@ -123,6 +124,9 @@ class _ProfileView extends StatelessWidget {
     final goals =
         profile.goals?.split(',').where((String s) => s.isNotEmpty).toList() ??
         <String>[];
+
+    // Build hair type display string
+    final hairTypeDisplay = _buildHairTypeDisplay(bucket, patterns);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -158,10 +162,10 @@ class _ProfileView extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        if (hairType != null) ...[
+                        if (hairTypeDisplay != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            hairType.label,
+                            hairTypeDisplay,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.primary,
                             ),
@@ -308,6 +312,24 @@ class _ProfileView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Builds a display string from bucket and patterns
+  String? _buildHairTypeDisplay(
+    HairPatternBucket? bucket,
+    List<String> patterns,
+  ) {
+    if (bucket == null) return null;
+
+    if (patterns.isEmpty) {
+      return bucket.label;
+    }
+
+    if (patterns.length == 1) {
+      return '${bucket.label} (${patterns.first})';
+    }
+
+    return '${bucket.label} (${patterns.join(' / ')})';
   }
 }
 
