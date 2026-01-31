@@ -4,7 +4,7 @@
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![License: MIT][license_badge]][license_link]
 
-A comprehensive hair care companion app to help you track products, log daily routines, understand your hair profile, and run experiments to discover what works best for your hair.
+A comprehensive hair care companion app to help you track products, log daily routines, and understand your hair profile.
 
 ---
 
@@ -30,13 +30,6 @@ A comprehensive hair care companion app to help you track products, log daily ro
 - Track treatments (color-treated, heat-damaged)
 - Document concerns and goals for targeted care
 
-### 🧪 Experiments
-- Scientific approach to finding what works
-- Create experiments with hypotheses and methods
-- Track variables and record observations over time
-- Mark experiments as active, completed, or abandoned
-- Rate success and document conclusions
-
 ---
 
 ## Architecture 🏗️
@@ -54,7 +47,6 @@ lib/
 │   ├── product_inventory/ # Products feature
 │   ├── daily_log/         # Daily logging feature
 │   ├── hair_profile/      # Hair bio/profile feature
-│   ├── experiments/       # Experiments feature
 │   └── home/              # Home navigation
 └── l10n/                  # Localization (EN, ES)
 ```
@@ -90,9 +82,24 @@ cd smart_hair_care
 flutter pub get
 ```
 
-3. **Run code generation** (required for Drift database)
+3. **Run code generation** (required for Drift database and generated localization)
+
+Run the code generators and delete conflicting outputs when prompted:
+
 ```sh
-dart run build_runner build --delete-conflicting-outputs
+# Generate all build_runner generated files (Drift, Retrofit, Freezed, etc.)
+flutter pub run build_runner build --delete-conflicting-outputs
+
+# Regenerate localization files if you changed ARB files
+flutter gen-l10n --arb-dir="lib/l10n/arb"
+```
+
+If you encounter stale generated/build artifacts, run:
+
+```sh
+flutter clean
+flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 4. **Run the app**
@@ -185,7 +192,6 @@ The app uses Drift SQLite with the following tables:
 | `products` | Hair care product inventory |
 | `daily_logs` | Daily hair care routine entries |
 | `hair_profiles` | User's hair characteristics |
-| `experiments` | Hair care experiments |
 
 ---
 

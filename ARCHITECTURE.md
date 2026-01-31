@@ -1,3 +1,79 @@
+# Architecture Overview
+
+This document summarizes the core architecture and developer workflow for the Smart Hair Care app (MVP).
+
+## High-level structure
+
+The repository follows a feature-first layout with clear separation between UI, state, persistence, and localization:
+
+- `lib/app` — App entry, theme, and global widgets
+- `lib/bootstrap.dart` — App initialization and top-level Riverpod setup
+- `lib/core` — Shared core code (database, models, helpers)
+  - `lib/core/database` — Drift database definition, tables, and DAOs
+- `lib/features` — Feature modules (product inventory, daily log, hair profile, home)
+- `lib/l10n/arb` — ARB translation resources
+
+
+## Tech stack
+
+- Flutter + Dart
+- Riverpod (state management)
+- Drift (type-safe SQLite) for persistence
+- Freezed + json_serializable for immutable models and JSON
+- build_runner for code generation (Drift, Retrofit, Freezed, etc.)
+- flutter_localizations with ARB files for i18n
+
+
+## Database (current MVP)
+
+The app's Drift database currently exposes these tables/DAOs:
+
+- `products` — Product inventory
+- `daily_logs` — Daily routine entries
+- `hair_profiles` — User hair profile data
+
+## Developer workflow / code generation
+
+1. Install deps:
+
+```sh
+flutter pub get
+```
+
+2. Generate code (recommended):
+
+```sh
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+3. Regenerate localization if ARB changed:
+
+```sh
+flutter gen-l10n --arb-dir="lib/l10n/arb"
+```
+
+4. If you encounter stale generated files or build artifacts, run:
+
+```sh
+flutter clean
+flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+
+## Tests & validation
+
+- Run static analysis:
+
+```sh
+dart analyze
+```
+
+- Run tests:
+
+```sh
+flutter test
+```
 # Smart Hair Care - Architecture & Conventions
 
 This document outlines the **architectural patterns** and **design conventions** used in this project. These patterns should remain stable even as specific implementation details change.
@@ -60,7 +136,7 @@ This allows clean imports: `import 'package:app/features/foo/notifiers/notifiers
 
 ### Pattern: AsyncNotifier for Async Data
 
-**When to use:** Data fetching from APIs or databases (products, logs, profiles, experiments)
+**When to use:** Data fetching from APIs or databases (products, logs, profiles)
 
 **How it works:**
 - `build()` method returns `Future<T>` - Riverpod manages loading/error/data states automatically

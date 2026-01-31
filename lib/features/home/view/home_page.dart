@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/features/daily_log/daily_log.dart';
-// experiments feature removed for MVP
 import 'package:smart_hair_care/features/hair_profile/hair_profile.dart';
 import 'package:smart_hair_care/features/product_inventory/product_inventory.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
