@@ -1,6 +1,5 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:smart_hair_care/core/database/daos/daily_logs_dao.dart';
-import 'package:smart_hair_care/core/database/daos/experiments_dao.dart';
 import 'package:smart_hair_care/core/database/daos/hair_profiles_dao.dart';
 import 'package:smart_hair_care/core/database/daos/products_dao.dart';
 import 'package:smart_hair_care/core/database/database.dart';
@@ -12,8 +11,6 @@ class MockDailyLogsDao extends Mock implements DailyLogsDao {}
 
 class MockHairProfilesDao extends Mock implements HairProfilesDao {}
 
-class MockExperimentsDao extends Mock implements ExperimentsDao {}
-
 // Fake classes for mocktail fallback values
 class FakeProductsCompanion extends Fake implements ProductsCompanion {}
 
@@ -21,26 +18,20 @@ class FakeDailyLogsCompanion extends Fake implements DailyLogsCompanion {}
 
 class FakeHairProfilesCompanion extends Fake implements HairProfilesCompanion {}
 
-class FakeExperimentsCompanion extends Fake implements ExperimentsCompanion {}
-
 class FakeProduct extends Fake implements Product {}
 
 class FakeDailyLog extends Fake implements DailyLog {}
 
 class FakeHairProfile extends Fake implements HairProfile {}
 
-class FakeExperiment extends Fake implements Experiment {}
-
 /// Register fallback values for mocktail
 void registerFallbackValues() {
   registerFallbackValue(FakeProductsCompanion());
   registerFallbackValue(FakeDailyLogsCompanion());
   registerFallbackValue(FakeHairProfilesCompanion());
-  registerFallbackValue(FakeExperimentsCompanion());
   registerFallbackValue(FakeProduct());
   registerFallbackValue(FakeDailyLog());
   registerFallbackValue(FakeHairProfile());
-  registerFallbackValue(FakeExperiment());
   registerFallbackValue(DateTime.now());
 }
 
@@ -124,34 +115,4 @@ class HairProfileFixtures {
     isHeatDamaged: false,
     lastUpdated: _baseDate,
   );
-}
-
-/// Test fixtures for Experiment entity
-class ExperimentFixtures {
-  static Experiment activeExperiment() => Experiment(
-    id: 1,
-    name: 'Protein vs Moisture Balance',
-    hypothesis: 'More protein will reduce frizz',
-    startDate: DateTime(2026),
-    status: 'active',
-    createdAt: DateTime(2026),
-  );
-
-  static Experiment completedExperiment() => Experiment(
-    id: 2,
-    name: 'Deep Conditioning Frequency',
-    hypothesis: 'Weekly deep conditioning improves curl definition',
-    startDate: DateTime(2025, 12),
-    endDate: DateTime(2025, 12, 31),
-    status: 'completed',
-    results: 'Curl definition improved significantly',
-    conclusion: 'Weekly deep conditioning is optimal',
-    successRating: 4,
-    createdAt: DateTime(2025, 12),
-  );
-
-  static List<Experiment> sampleExperiments() => [
-    activeExperiment(),
-    completedExperiment(),
-  ];
 }

@@ -1,3 +1,5 @@
+# Architecture Overview
+
 # Smart Hair Care - Architecture & Conventions
 
 This document outlines the **architectural patterns** and **design conventions** used in this project. These patterns should remain stable even as specific implementation details change.
@@ -60,7 +62,7 @@ This allows clean imports: `import 'package:app/features/foo/notifiers/notifiers
 
 ### Pattern: AsyncNotifier for Async Data
 
-**When to use:** Data fetching from APIs or databases (products, logs, profiles, experiments)
+**When to use:** Data fetching from APIs or databases (products, logs, profiles)
 
 **How it works:**
 - `build()` method returns `Future<T>` - Riverpod manages loading/error/data states automatically
