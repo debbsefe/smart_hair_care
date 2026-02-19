@@ -620,9 +620,26 @@ class _CharacteristicsStep extends StatelessWidget {
             decoration: InputDecoration(
               labelText: l10n.profileDensityLabel,
               border: const OutlineInputBorder(),
+              prefixIcon: Tooltip(
+                triggerMode: TooltipTriggerMode.tap,
+                showDuration: const Duration(seconds: 4),
+                message: Density.values
+                    .map(
+                      (d) =>
+                          '${d.readableLabel(l10n)}: '
+                          '${d.symptomLabel(l10n)}',
+                    )
+                    .join('\n'),
+                child: const Icon(Icons.info_outline, size: 20),
+              ),
             ),
             items: Density.values
-                .map((d) => DropdownMenuItem(value: d, child: Text(d.label)))
+                .map(
+                  (d) => DropdownMenuItem(
+                    value: d,
+                    child: Text(d.readableLabel(l10n)),
+                  ),
+                )
                 .toList(),
             onChanged: onDensityChanged,
           ),

@@ -42,8 +42,8 @@ void main() {
       // Porosity dropdown should be present with its label
       expect(find.text(l10n.profilePorosityLabel), findsOneWidget);
 
-      // Info icon should be present for symptom descriptions
-      expect(find.byIcon(Icons.info_outline), findsOneWidget);
+      // Info icons should be present for symptom descriptions
+      expect(find.byIcon(Icons.info_outline), findsWidgets);
 
       // Open the dropdown by tapping it
       await tester.tap(find.byType(DropdownButtonFormField<Porosity>));
@@ -96,6 +96,77 @@ void main() {
 
       // The prefilled value (high) should appear in the dropdown
       expect(find.text(l10n.profilePorosityReadableHigh), findsOneWidget);
+    });
+  });
+
+  group('HairProfileSetupPage density selection', () {
+    testWidgets('shows density dropdown with readable labels', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      await navigateToCharacteristicsStep(tester);
+
+      // Density dropdown should be present with its label
+      expect(find.text(l10n.profileDensityLabel), findsOneWidget);
+
+      // Open the dropdown by tapping it
+      await tester.tap(find.byType(DropdownButtonFormField<Density>));
+      await tester.pumpAndSettle();
+
+      // All readable labels should appear in the opened dropdown
+      expect(find.text(l10n.profileDensityReadableLow), findsWidgets);
+      expect(find.text(l10n.profileDensityReadableMedium), findsWidgets);
+      expect(find.text(l10n.profileDensityReadableHigh), findsWidgets);
+    });
+
+    testWidgets('can select a density value from dropdown', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      await navigateToCharacteristicsStep(tester);
+
+      // Open the dropdown
+      await tester.tap(find.byType(DropdownButtonFormField<Density>));
+      await tester.pumpAndSettle();
+
+      // Select "Low Density"
+      await tester.tap(find.text(l10n.profileDensityReadableLow).last);
+      await tester.pumpAndSettle();
+
+      // The selected value should be shown
+      expect(find.text(l10n.profileDensityReadableLow), findsOneWidget);
+    });
+
+    testWidgets('prefills density from saved profile when editing', (
+      tester,
+    ) async {
+      final profile = HairProfileFixtures.curlyProfile();
+      when(() => mockDao.getProfile()).thenAnswer((_) async => profile);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(isEditing: true),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      await navigateToCharacteristicsStep(tester);
+
+      // The prefilled value (medium) should appear in the dropdown
+      expect(find.text(l10n.profileDensityReadableMedium), findsOneWidget);
     });
   });
 }
