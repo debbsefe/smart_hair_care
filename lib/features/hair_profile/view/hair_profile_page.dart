@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/models.dart';
 import 'package:smart_hair_care/features/hair_profile/notifiers/notifiers.dart';
-import 'package:smart_hair_care/features/hair_profile/view/hair_profile_setup_page.dart';
+import 'package:smart_hair_care/features/hair_profile/view/view.dart';
 import 'package:smart_hair_care/features/shared/widgets/widgets.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 
@@ -27,16 +27,6 @@ class HairProfilePage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.hairProfileTitle),
-        actions: [
-          if (profileAsync.value != null)
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () => Navigator.push(
-                context,
-                HairProfileSetupPage.getRoute(isEditing: true),
-              ),
-            ),
-        ],
       ),
       body: profileAsync.when(
         data: (profile) => profile != null

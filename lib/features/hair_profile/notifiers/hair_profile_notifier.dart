@@ -47,11 +47,6 @@ class HairProfileNotifier extends AsyncNotifier<HairProfile?> {
     );
     ref.invalidateSelf();
   }
-
-  Future<void> updateProfile(HairProfile profile) async {
-    await _dao.updateProfile(profile);
-    ref.invalidateSelf();
-  }
 }
 
 /// Provider for hair profile

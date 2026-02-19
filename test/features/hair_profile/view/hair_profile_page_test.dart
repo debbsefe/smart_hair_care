@@ -52,8 +52,6 @@ void main() {
       // Profile view should be shown, not empty state
       // Empty state has "Get Started" button
       expect(find.textContaining('Get Started'), findsNothing);
-      // Should show edit button in app bar
-      expect(find.byIcon(Icons.edit), findsOneWidget);
     });
   });
 }

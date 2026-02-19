@@ -82,22 +82,6 @@ class HairPatternSelectionNotifier extends Notifier<HairPatternSelectionState> {
     );
   }
 
-  /// Load existing selection from profile
-  void loadFromProfile(HairProfile? profile) {
-    if (profile == null) {
-      state = const HairPatternSelectionState();
-      return;
-    }
-
-    final bucket = HairPatternBucket.fromValue(profile.primaryType);
-    final patterns = Set<String>.from(profile.specificPatterns);
-
-    state = HairPatternSelectionState(
-      selectedBucket: bucket,
-      selectedPatterns: patterns,
-    );
-  }
-
   /// Clear all selections
   void clear() {
     state = const HairPatternSelectionState();

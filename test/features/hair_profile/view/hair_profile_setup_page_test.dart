@@ -19,7 +19,13 @@ void main() {
   });
 
   Future<void> navigateToCharacteristicsStep(WidgetTester tester) async {
+    // Fill required name field
+    await tester.enterText(find.byType(TextField), 'Test Name');
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    // Select a hair type bucket (first card)
+    await tester.tap(find.byType(InkWell).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Next'));
     await tester.pumpAndSettle();
@@ -79,24 +85,6 @@ void main() {
       // The selected value should be shown
       expect(find.text(l10n.profilePorosityReadableLow), findsOneWidget);
     });
-
-    testWidgets('prefills porosity from saved profile when editing', (
-      tester,
-    ) async {
-      final profile = HairProfileFixtures.curlyProfile();
-      when(() => mockDao.getProfile()).thenAnswer((_) async => profile);
-
-      await tester.pumpApp(
-        const HairProfileSetupPage(isEditing: true),
-        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
-      );
-      await tester.pumpAndSettle();
-
-      await navigateToCharacteristicsStep(tester);
-
-      // The prefilled value (high) should appear in the dropdown
-      expect(find.text(l10n.profilePorosityReadableHigh), findsOneWidget);
-    });
   });
 
   group('HairProfileSetupPage density selection', () {
@@ -149,24 +137,6 @@ void main() {
 
       // The selected value should be shown
       expect(find.text(l10n.profileDensityReadableLow), findsOneWidget);
-    });
-
-    testWidgets('prefills density from saved profile when editing', (
-      tester,
-    ) async {
-      final profile = HairProfileFixtures.curlyProfile();
-      when(() => mockDao.getProfile()).thenAnswer((_) async => profile);
-
-      await tester.pumpApp(
-        const HairProfileSetupPage(isEditing: true),
-        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
-      );
-      await tester.pumpAndSettle();
-
-      await navigateToCharacteristicsStep(tester);
-
-      // The prefilled value (medium) should appear in the dropdown
-      expect(find.text(l10n.profileDensityReadableMedium), findsOneWidget);
     });
   });
 
@@ -274,6 +244,82 @@ void main() {
 
       // The selected value should be shown
       expect(find.text(l10n.profileScalpReadableOily), findsOneWidget);
+    });
+  });
+
+  group('HairProfileSetupPage validation', () {
+    testWidgets('blocks navigation when name is empty', (tester) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      // Try to go next without entering name
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      // Should show validation error and stay on step 1
+      expect(find.text(l10n.profileNameRequired), findsOneWidget);
+      expect(find.text(l10n.profileBasicInfoTitle), findsOneWidget);
+    });
+
+    testWidgets('blocks navigation when hair type is not selected', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      // Fill name and advance
+      await tester.enterText(find.byType(TextField), 'Test Name');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      // Try to go next without selecting hair type
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      // Should show validation error and stay on step 2
+      expect(find.text(l10n.profileHairTypeRequired), findsOneWidget);
+      expect(find.text(l10n.profileHairTypeTitle), findsOneWidget);
+    });
+
+    testWidgets('allows navigation after filling required fields', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      // Fill name and advance
+      await tester.enterText(find.byType(TextField), 'Test Name');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      // Should be on hair type step
+      expect(find.text(l10n.profileHairTypeTitle), findsOneWidget);
+
+      // Select hair type bucket and advance
+      await tester.tap(find.byType(InkWell).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      // Should be on characteristics step
+      expect(find.text(l10n.profileCharacteristicsTitle), findsOneWidget);
     });
   });
 }
