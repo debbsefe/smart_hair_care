@@ -649,9 +649,26 @@ class _CharacteristicsStep extends StatelessWidget {
             decoration: InputDecoration(
               labelText: l10n.profileThicknessLabel,
               border: const OutlineInputBorder(),
+              prefixIcon: Tooltip(
+                triggerMode: TooltipTriggerMode.tap,
+                showDuration: const Duration(seconds: 4),
+                message: Thickness.values
+                    .map(
+                      (t) =>
+                          '${t.readableLabel(l10n)}: '
+                          '${t.symptomLabel(l10n)}',
+                    )
+                    .join('\n'),
+                child: const Icon(Icons.info_outline, size: 20),
+              ),
             ),
             items: Thickness.values
-                .map((t) => DropdownMenuItem(value: t, child: Text(t.label)))
+                .map(
+                  (t) => DropdownMenuItem(
+                    value: t,
+                    child: Text(t.readableLabel(l10n)),
+                  ),
+                )
                 .toList(),
             onChanged: onThicknessChanged,
           ),

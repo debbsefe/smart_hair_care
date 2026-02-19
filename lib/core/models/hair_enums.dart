@@ -150,6 +150,30 @@ enum Thickness {
       orElse: () => Thickness.medium,
     );
   }
+
+  /// Returns the thread-comparison symptom description for this thickness.
+  String symptomLabel(AppLocalizations l10n) {
+    switch (this) {
+      case Thickness.fine:
+        return l10n.profileThicknessSymptomFine;
+      case Thickness.medium:
+        return l10n.profileThicknessSymptomMedium;
+      case Thickness.coarse:
+        return l10n.profileThicknessSymptomCoarse;
+    }
+  }
+
+  /// Returns the human-readable localized label for this thickness.
+  String readableLabel(AppLocalizations l10n) {
+    switch (this) {
+      case Thickness.fine:
+        return l10n.profileThicknessReadableFine;
+      case Thickness.medium:
+        return l10n.profileThicknessReadableMedium;
+      case Thickness.coarse:
+        return l10n.profileThicknessReadableCoarse;
+    }
+  }
 }
 
 /// Scalp type options
