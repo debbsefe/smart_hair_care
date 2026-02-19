@@ -169,4 +169,57 @@ void main() {
       expect(find.text(l10n.profileDensityReadableMedium), findsOneWidget);
     });
   });
+
+  group('HairProfileSetupPage thickness selection', () {
+    testWidgets('shows thickness dropdown with readable labels', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      await navigateToCharacteristicsStep(tester);
+
+      // Thickness dropdown should be present with its label
+      expect(find.text(l10n.profileThicknessLabel), findsOneWidget);
+
+      // Open the dropdown by tapping it
+      await tester.tap(find.byType(DropdownButtonFormField<Thickness>));
+      await tester.pumpAndSettle();
+
+      // All readable labels should appear in the opened dropdown
+      expect(find.text(l10n.profileThicknessReadableFine), findsWidgets);
+      expect(find.text(l10n.profileThicknessReadableMedium), findsWidgets);
+      expect(find.text(l10n.profileThicknessReadableCoarse), findsWidgets);
+    });
+
+    testWidgets('can select a thickness value from dropdown', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      await navigateToCharacteristicsStep(tester);
+
+      // Open the dropdown
+      await tester.tap(find.byType(DropdownButtonFormField<Thickness>));
+      await tester.pumpAndSettle();
+
+      // Select "Fine"
+      await tester.tap(find.text(l10n.profileThicknessReadableFine).last);
+      await tester.pumpAndSettle();
+
+      // The selected value should be shown
+      expect(find.text(l10n.profileThicknessReadableFine), findsOneWidget);
+    });
+  });
 }
