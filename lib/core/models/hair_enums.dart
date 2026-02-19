@@ -106,6 +106,30 @@ enum Density {
       orElse: () => Density.medium,
     );
   }
+
+  /// Returns the scalp-visibility symptom description for this density.
+  String symptomLabel(AppLocalizations l10n) {
+    switch (this) {
+      case Density.low:
+        return l10n.profileDensitySymptomLow;
+      case Density.medium:
+        return l10n.profileDensitySymptomMedium;
+      case Density.high:
+        return l10n.profileDensitySymptomHigh;
+    }
+  }
+
+  /// Returns the human-readable localized label for this density.
+  String readableLabel(AppLocalizations l10n) {
+    switch (this) {
+      case Density.low:
+        return l10n.profileDensityReadableLow;
+      case Density.medium:
+        return l10n.profileDensityReadableMedium;
+      case Density.high:
+        return l10n.profileDensityReadableHigh;
+    }
+  }
 }
 
 /// Thickness/strand width options
