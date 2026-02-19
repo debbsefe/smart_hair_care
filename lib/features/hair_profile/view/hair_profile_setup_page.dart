@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/models.dart';
 import 'package:smart_hair_care/features/hair_profile/notifiers/notifiers.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 
-/// Page for setting up or editing the hair profile
+/// Page for setting up the hair profile (one-time onboarding)
 class HairProfileSetupPage extends ConsumerStatefulWidget {
-  const HairProfileSetupPage({
-    this.isEditing = false,
-    super.key,
-  });
-
-  final bool isEditing;
+  const HairProfileSetupPage({super.key});
 
   /// Returns a [MaterialPageRoute] for Navigator 1.0 navigation
-  static Route<void> getRoute({bool isEditing = false}) {
+  static Route<void> getRoute() {
     return MaterialPageRoute<void>(
-      builder: (_) => HairProfileSetupPage(isEditing: isEditing),
-      settings: RouteSettings(
-        name: isEditing ? '/profile/edit' : '/profile/setup',
-      ),
+      builder: (_) => const HairProfileSetupPage(),
+      settings: const RouteSettings(name: '/profile/setup'),
     );
   }
 
@@ -33,8 +25,7 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
   final _pageController = PageController();
   int _currentStep = 0;
   final int _totalSteps = 5;
-  bool _hasPrefilledProfile = false;
-  ProviderSubscription<AsyncValue<HairProfile?>>? _profileSubscription;
+  bool _showValidationError = false;
 
   // Form values
   late TextEditingController _nameController;
@@ -55,61 +46,59 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-
-    if (widget.isEditing) {
-      _profileSubscription = ref.listenManual(hairProfileProvider, (_, next) {
-        _prefillFromProfile(next.value);
-      });
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _prefillFromProfile(ref.read(hairProfileProvider).value);
-      });
-    }
-  }
-
-  void _prefillFromProfile(HairProfile? profile) {
-    if (!widget.isEditing ||
-        _hasPrefilledProfile ||
-        profile == null ||
-        !mounted) {
-      return;
-    }
-
-    _nameController.text = profile.name ?? '';
-    _selectedBucket = HairPatternBucket.fromValue(profile.primaryType);
-    _selectedPatterns = Set<String>.from(profile.specificPatterns);
-    _selectedPorosity = Porosity.fromValue(profile.porosity);
-    _selectedDensity = Density.fromValue(profile.density);
-    _selectedThickness = Thickness.fromValue(profile.thickness);
-    _selectedScalpType = ScalpType.fromValue(profile.scalpType);
-    _hairLength = profile.hairLength;
-    _selectedConcerns
-      ..clear()
-      ..addAll(
-        profile.concerns?.split(',').where((concern) => concern.isNotEmpty) ??
-            [],
-      );
-    _selectedGoals
-      ..clear()
-      ..addAll(
-        profile.goals?.split(',').where((goal) => goal.isNotEmpty) ?? [],
-      );
-    _isColorTreated = profile.isColorTreated;
-    _isHeatDamaged = profile.isHeatDamaged;
-    _hasPrefilledProfile = true;
-
-    setState(() {});
   }
 
   @override
   void dispose() {
-    _profileSubscription?.close();
     _pageController.dispose();
     _nameController.dispose();
     super.dispose();
   }
 
+  bool _isCurrentStepValid() {
+    switch (_currentStep) {
+      case 0: // Basic Info — name required
+        return _nameController.text.trim().isNotEmpty;
+      case 1: // Hair Pattern — bucket required
+        return _selectedBucket != null;
+      case 2: // Characteristics — all four required
+        return _selectedPorosity != null &&
+            _selectedDensity != null &&
+            _selectedThickness != null &&
+            _selectedScalpType != null;
+      case 3: // Concerns — at least one
+        return _selectedConcerns.isNotEmpty;
+      case 4: // Goals — at least one
+        return _selectedGoals.isNotEmpty;
+      default:
+        return true;
+    }
+  }
+
+  String _validationMessage(AppLocalizations l10n) {
+    switch (_currentStep) {
+      case 0:
+        return l10n.profileNameRequired;
+      case 1:
+        return l10n.profileHairTypeRequired;
+      case 2:
+        return l10n.profileCharacteristicsRequired;
+      case 3:
+        return l10n.profileConcernsRequired;
+      case 4:
+        return l10n.profileGoalsRequired;
+      default:
+        return '';
+    }
+  }
+
   Future<void> _nextStep() async {
+    if (!_isCurrentStepValid()) {
+      setState(() => _showValidationError = true);
+      return;
+    }
+    setState(() => _showValidationError = false);
+
     if (_currentStep < _totalSteps - 1) {
       await _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -169,9 +158,7 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.isEditing ? l10n.editProfileTitle : l10n.profileSetupTitle,
-        ),
+        title: Text(l10n.profileSetupTitle),
       ),
       body: Column(
         children: [
@@ -268,6 +255,18 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
               ],
             ),
           ),
+
+          // Validation error message
+          if (_showValidationError)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                _validationMessage(l10n),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ),
 
           // Navigation buttons
           SafeArea(

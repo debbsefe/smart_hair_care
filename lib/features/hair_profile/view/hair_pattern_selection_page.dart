@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/hair_enums.dart';
 import 'package:smart_hair_care/features/hair_profile/notifiers/hair_pattern_selection_notifier.dart';
 
@@ -38,24 +37,6 @@ class HairPatternSelectionPage extends ConsumerStatefulWidget {
 class _HairPatternSelectionPageState
     extends ConsumerState<HairPatternSelectionPage> {
   bool _isSaving = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Load existing profile data
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final dao = ref.read(hairProfilesDaoProvider);
-      unawaited(
-        dao.getProfile().then((profile) {
-          if (profile != null && mounted) {
-            ref
-                .read(hairPatternSelectionProvider.notifier)
-                .loadFromProfile(profile);
-          }
-        }),
-      );
-    });
-  }
 
   Future<void> _saveSelection() async {
     setState(() => _isSaving = true);
