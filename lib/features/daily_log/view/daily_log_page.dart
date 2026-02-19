@@ -106,7 +106,7 @@ class _DailyLogPageState extends ConsumerState<DailyLogPage> {
     // Filter logs based on selected date or show all for the month
     final displayLogs = _selectedDate != null
         ? logsGrouped[_selectedDate] ?? []
-        : logs.where((DailyLog log) {
+        : logs.where((log) {
             return log.date.year == _selectedMonth.year &&
                 log.date.month == _selectedMonth.month;
           }).toList();
