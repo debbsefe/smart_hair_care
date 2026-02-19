@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/features/hair_profile/notifiers/hair_profile_notifier.dart';
 
-import '../../../helpers/helpers.dart';
+import '../../../fixtures/fixtures.dart';
 
 void main() {
   late MockHairProfilesDao mockDao;

@@ -1,3 +1,5 @@
+import 'package:smart_hair_care/l10n/l10n.dart';
+
 /// Hair pattern bucket categories (high-level grouping)
 enum HairPatternBucket {
   straight('straight', 'Straight'),
@@ -53,13 +55,36 @@ enum Porosity {
   const Porosity(this.value, this.label);
   final String value;
   final String label;
-
   static Porosity? fromValue(String? value) {
     if (value == null) return null;
     return Porosity.values.firstWhere(
       (e) => e.value == value,
       orElse: () => Porosity.medium,
     );
+  }
+
+  /// Returns the symptom-first localized label for this porosity.
+  String symptomLabel(AppLocalizations l10n) {
+    switch (this) {
+      case Porosity.low:
+        return l10n.profilePorositySymptomLow;
+      case Porosity.medium:
+        return l10n.profilePorositySymptomMedium;
+      case Porosity.high:
+        return l10n.profilePorositySymptomHigh;
+    }
+  }
+
+  /// Returns the human-readable localized technical label for this porosity.
+  String readableLabel(AppLocalizations l10n) {
+    switch (this) {
+      case Porosity.low:
+        return l10n.profilePorosityReadableLow;
+      case Porosity.medium:
+        return l10n.profilePorosityReadableMedium;
+      case Porosity.high:
+        return l10n.profilePorosityReadableHigh;
+    }
   }
 }
 

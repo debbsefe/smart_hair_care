@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/features/product_inventory/view/products_page.dart';
 
+import '../../../fixtures/fixtures.dart';
 import '../../../helpers/helpers.dart';
 
 void main() {
