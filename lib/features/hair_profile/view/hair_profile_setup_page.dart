@@ -678,9 +678,26 @@ class _CharacteristicsStep extends StatelessWidget {
             decoration: InputDecoration(
               labelText: l10n.profileScalpLabel,
               border: const OutlineInputBorder(),
+              prefixIcon: Tooltip(
+                triggerMode: TooltipTriggerMode.tap,
+                showDuration: const Duration(seconds: 4),
+                message: ScalpType.values
+                    .map(
+                      (s) =>
+                          '${s.readableLabel(l10n)}: '
+                          '${s.symptomLabel(l10n)}',
+                    )
+                    .join('\n'),
+                child: const Icon(Icons.info_outline, size: 20),
+              ),
             ),
             items: ScalpType.values
-                .map((s) => DropdownMenuItem(value: s, child: Text(s.label)))
+                .map(
+                  (s) => DropdownMenuItem(
+                    value: s,
+                    child: Text(s.readableLabel(l10n)),
+                  ),
+                )
                 .toList(),
             onChanged: onScalpTypeChanged,
           ),
