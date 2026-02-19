@@ -61,11 +61,12 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
         return _nameController.text.trim().isNotEmpty;
       case 1: // Hair Pattern — bucket required
         return _selectedBucket != null;
-      case 2: // Characteristics — all four required
+      case 2: // Characteristics — all five required
         return _selectedPorosity != null &&
             _selectedDensity != null &&
             _selectedThickness != null &&
-            _selectedScalpType != null;
+            _selectedScalpType != null &&
+            _hairLength != null;
       case 3: // Concerns — at least one
         return _selectedConcerns.isNotEmpty;
       case 4: // Goals — at least one
