@@ -195,4 +195,32 @@ enum ScalpType {
       orElse: () => ScalpType.normal,
     );
   }
+
+  /// Returns the wash-frequency symptom description for this scalp type.
+  String symptomLabel(AppLocalizations l10n) {
+    switch (this) {
+      case ScalpType.dry:
+        return l10n.profileScalpSymptomDry;
+      case ScalpType.normal:
+        return l10n.profileScalpSymptomNormal;
+      case ScalpType.oily:
+        return l10n.profileScalpSymptomOily;
+      case ScalpType.combination:
+        return l10n.profileScalpSymptomCombination;
+    }
+  }
+
+  /// Returns the human-readable localized label for this scalp type.
+  String readableLabel(AppLocalizations l10n) {
+    switch (this) {
+      case ScalpType.dry:
+        return l10n.profileScalpReadableDry;
+      case ScalpType.normal:
+        return l10n.profileScalpReadableNormal;
+      case ScalpType.oily:
+        return l10n.profileScalpReadableOily;
+      case ScalpType.combination:
+        return l10n.profileScalpReadableCombination;
+    }
+  }
 }

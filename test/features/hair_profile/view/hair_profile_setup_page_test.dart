@@ -222,4 +222,58 @@ void main() {
       expect(find.text(l10n.profileThicknessReadableFine), findsOneWidget);
     });
   });
+
+  group('HairProfileSetupPage scalp type selection', () {
+    testWidgets('shows scalp type dropdown with readable labels', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      await navigateToCharacteristicsStep(tester);
+
+      // Scalp type dropdown should be present with its label
+      expect(find.text(l10n.profileScalpLabel), findsOneWidget);
+
+      // Open the dropdown by tapping it
+      await tester.tap(find.byType(DropdownButtonFormField<ScalpType>));
+      await tester.pumpAndSettle();
+
+      // All readable labels should appear in the opened dropdown
+      expect(find.text(l10n.profileScalpReadableDry), findsWidgets);
+      expect(find.text(l10n.profileScalpReadableNormal), findsWidgets);
+      expect(find.text(l10n.profileScalpReadableOily), findsWidgets);
+      expect(find.text(l10n.profileScalpReadableCombination), findsWidgets);
+    });
+
+    testWidgets('can select a scalp type value from dropdown', (
+      tester,
+    ) async {
+      when(() => mockDao.getProfile()).thenAnswer((_) async => null);
+
+      await tester.pumpApp(
+        const HairProfileSetupPage(),
+        overrides: [hairProfilesDaoProvider.overrideWithValue(mockDao)],
+      );
+      await tester.pumpAndSettle();
+
+      await navigateToCharacteristicsStep(tester);
+
+      // Open the dropdown
+      await tester.tap(find.byType(DropdownButtonFormField<ScalpType>));
+      await tester.pumpAndSettle();
+
+      // Select "Oily"
+      await tester.tap(find.text(l10n.profileScalpReadableOily).last);
+      await tester.pumpAndSettle();
+
+      // The selected value should be shown
+      expect(find.text(l10n.profileScalpReadableOily), findsOneWidget);
+    });
+  });
 }
