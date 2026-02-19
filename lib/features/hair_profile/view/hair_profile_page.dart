@@ -116,13 +116,10 @@ class _ProfileView extends StatelessWidget {
     final thickness = Thickness.fromValue(profile.thickness);
     final scalpType = ScalpType.fromValue(profile.scalpType);
     final concerns =
-        profile.concerns
-            ?.split(',')
-            .where((String s) => s.isNotEmpty)
-            .toList() ??
+        profile.concerns?.split(',').where((s) => s.isNotEmpty).toList() ??
         <String>[];
     final goals =
-        profile.goals?.split(',').where((String s) => s.isNotEmpty).toList() ??
+        profile.goals?.split(',').where((s) => s.isNotEmpty).toList() ??
         <String>[];
 
     // Build hair type display string
@@ -271,7 +268,7 @@ class _ProfileView extends StatelessWidget {
               runSpacing: 8,
               children: concerns
                   .map(
-                    (String concern) => Chip(
+                    (concern) => Chip(
                       label: Text(concern),
                       backgroundColor: theme.colorScheme.errorContainer,
                       labelStyle: TextStyle(
@@ -298,7 +295,7 @@ class _ProfileView extends StatelessWidget {
               runSpacing: 8,
               children: goals
                   .map(
-                    (String goal) => Chip(
+                    (goal) => Chip(
                       label: Text(goal),
                       backgroundColor: theme.colorScheme.primaryContainer,
                       labelStyle: TextStyle(

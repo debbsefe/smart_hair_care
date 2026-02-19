@@ -28,10 +28,10 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
-      onCreate: (Migrator m) async {
+      onCreate: (m) async {
         await m.createAll();
       },
-      onUpgrade: (Migrator m, int from, int to) async {
+      onUpgrade: (m, from, to) async {
         // During active development, drop and recreate all tables
         for (final table in allTables) {
           await m.deleteTable(table.actualTableName);

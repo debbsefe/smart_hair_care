@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/features/product_inventory/notifiers/notifiers.dart';
 
 /// A widget that displays product names from comma-separated product IDs
@@ -32,9 +31,7 @@ class ProductNamesDisplay extends ConsumerWidget {
 
         for (final id in ids) {
           if (id == null) continue;
-          final product = allProducts
-              .where((Product p) => p.id == id)
-              .firstOrNull;
+          final product = allProducts.where((p) => p.id == id).firstOrNull;
           if (product != null) {
             productNames.add(product.name);
           }
