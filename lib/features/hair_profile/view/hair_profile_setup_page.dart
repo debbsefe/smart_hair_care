@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/models.dart';
 import 'package:smart_hair_care/features/hair_profile/notifiers/notifiers.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
@@ -32,6 +33,8 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
   final _pageController = PageController();
   int _currentStep = 0;
   final int _totalSteps = 5;
+  bool _hasPrefilledProfile = false;
+  ProviderSubscription<AsyncValue<HairProfile?>>? _profileSubscription;
 
   // Form values
   late TextEditingController _nameController;
@@ -53,33 +56,54 @@ class _HairProfileSetupPageState extends ConsumerState<HairProfileSetupPage> {
     super.initState();
     _nameController = TextEditingController();
 
-    // Pre-fill if editing
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final profile = ref.read(hairProfileProvider).value;
-      if (profile != null && widget.isEditing) {
-        _nameController.text = profile.name ?? '';
-        _selectedBucket = HairPatternBucket.fromValue(profile.primaryType);
-        _selectedPatterns = Set<String>.from(profile.specificPatterns);
-        _selectedPorosity = Porosity.fromValue(profile.porosity);
-        _selectedDensity = Density.fromValue(profile.density);
-        _selectedThickness = Thickness.fromValue(profile.thickness);
-        _selectedScalpType = ScalpType.fromValue(profile.scalpType);
-        _hairLength = profile.hairLength;
-        _selectedConcerns.addAll(
-          profile.concerns?.split(',').where((s) => s.isNotEmpty) ?? [],
-        );
-        _selectedGoals.addAll(
-          profile.goals?.split(',').where((s) => s.isNotEmpty) ?? [],
-        );
-        _isColorTreated = profile.isColorTreated;
-        _isHeatDamaged = profile.isHeatDamaged;
-        setState(() {});
-      }
-    });
+    if (widget.isEditing) {
+      _profileSubscription = ref.listenManual(hairProfileProvider, (_, next) {
+        _prefillFromProfile(next.value);
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _prefillFromProfile(ref.read(hairProfileProvider).value);
+      });
+    }
+  }
+
+  void _prefillFromProfile(HairProfile? profile) {
+    if (!widget.isEditing ||
+        _hasPrefilledProfile ||
+        profile == null ||
+        !mounted) {
+      return;
+    }
+
+    _nameController.text = profile.name ?? '';
+    _selectedBucket = HairPatternBucket.fromValue(profile.primaryType);
+    _selectedPatterns = Set<String>.from(profile.specificPatterns);
+    _selectedPorosity = Porosity.fromValue(profile.porosity);
+    _selectedDensity = Density.fromValue(profile.density);
+    _selectedThickness = Thickness.fromValue(profile.thickness);
+    _selectedScalpType = ScalpType.fromValue(profile.scalpType);
+    _hairLength = profile.hairLength;
+    _selectedConcerns
+      ..clear()
+      ..addAll(
+        profile.concerns?.split(',').where((concern) => concern.isNotEmpty) ??
+            [],
+      );
+    _selectedGoals
+      ..clear()
+      ..addAll(
+        profile.goals?.split(',').where((goal) => goal.isNotEmpty) ?? [],
+      );
+    _isColorTreated = profile.isColorTreated;
+    _isHeatDamaged = profile.isHeatDamaged;
+    _hasPrefilledProfile = true;
+
+    setState(() {});
   }
 
   @override
   void dispose() {
+    _profileSubscription?.close();
     _pageController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -567,9 +591,26 @@ class _CharacteristicsStep extends StatelessWidget {
             decoration: InputDecoration(
               labelText: l10n.profilePorosityLabel,
               border: const OutlineInputBorder(),
+              prefixIcon: Tooltip(
+                triggerMode: TooltipTriggerMode.tap,
+                showDuration: const Duration(seconds: 4),
+                message: Porosity.values
+                    .map(
+                      (p) =>
+                          '${p.readableLabel(l10n)}: '
+                          '${p.symptomLabel(l10n)}',
+                    )
+                    .join('\n'),
+                child: const Icon(Icons.info_outline, size: 20),
+              ),
             ),
             items: Porosity.values
-                .map((p) => DropdownMenuItem(value: p, child: Text(p.label)))
+                .map(
+                  (p) => DropdownMenuItem(
+                    value: p,
+                    child: Text(p.readableLabel(l10n)),
+                  ),
+                )
                 .toList(),
             onChanged: onPorosityChanged,
           ),
