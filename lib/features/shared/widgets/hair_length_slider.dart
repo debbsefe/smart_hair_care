@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_hair_care/l10n/l10n.dart';
 
 /// A reusable slider widget for selecting hair length in centimeters.
 ///
@@ -23,7 +24,10 @@ class HairLengthSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final displayValue = value != null ? '${value!.round()} cm' : 'Not set';
+    final l10n = context.l10n;
+    final displayValue = value != null
+        ? l10n.hairLengthValue(value!.round())
+        : l10n.notSet;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +40,9 @@ class HairLengthSlider extends StatelessWidget {
           value: value ?? 20,
           max: 100,
           divisions: 100,
-          label: value != null ? '${value!.round()} cm' : null,
+          label: value != null
+              ? l10n.hairLengthValue(value!.round())
+              : null,
           onChanged: onChanged,
         ),
       ],

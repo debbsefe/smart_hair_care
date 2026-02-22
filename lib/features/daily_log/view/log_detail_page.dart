@@ -152,7 +152,7 @@ class _LogDetailView extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '${log.hairLength!.round()} cm',
+                      l10n.hairLengthValue(log.hairLength!.round()),
                       style: theme.textTheme.bodyLarge,
                     ),
                   ],

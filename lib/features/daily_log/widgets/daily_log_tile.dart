@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/models.dart';
 import 'package:smart_hair_care/features/shared/utils/date_formatter.dart';
+import 'package:smart_hair_care/l10n/l10n.dart';
 
 /// A card widget displaying a daily log entry
 class DailyLogTile extends StatelessWidget {
@@ -19,6 +20,7 @@ class DailyLogTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final routineType = RoutineType.fromValue(log.routineType);
 
     return Card(
@@ -98,7 +100,7 @@ class DailyLogTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${log.hairLength!.round()} cm',
+                      l10n.hairLengthValue(log.hairLength!.round()),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
