@@ -851,6 +851,17 @@ class $DailyLogsTable extends DailyLogs
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _hairLengthMeta = const VerificationMeta(
+    'hairLength',
+  );
+  @override
+  late final GeneratedColumn<double> hairLength = GeneratedColumn<double>(
+    'hair_length',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -893,6 +904,7 @@ class $DailyLogsTable extends DailyLogs
     hairConditionRating,
     weather,
     humidityLevel,
+    hairLength,
     notes,
     photoUrls,
     createdAt,
@@ -970,6 +982,12 @@ class $DailyLogsTable extends DailyLogs
         ),
       );
     }
+    if (data.containsKey('hair_length')) {
+      context.handle(
+        _hairLengthMeta,
+        hairLength.isAcceptableOrUnknown(data['hair_length']!, _hairLengthMeta),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -1029,6 +1047,10 @@ class $DailyLogsTable extends DailyLogs
         DriftSqlType.int,
         data['${effectivePrefix}humidity_level'],
       ),
+      hairLength: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}hair_length'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -1059,6 +1081,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
   final int? hairConditionRating;
   final String? weather;
   final int? humidityLevel;
+  final double? hairLength;
   final String? notes;
   final String? photoUrls;
   final DateTime createdAt;
@@ -1071,6 +1094,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
     this.hairConditionRating,
     this.weather,
     this.humidityLevel,
+    this.hairLength,
     this.notes,
     this.photoUrls,
     required this.createdAt,
@@ -1095,6 +1119,9 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
     }
     if (!nullToAbsent || humidityLevel != null) {
       map['humidity_level'] = Variable<int>(humidityLevel);
+    }
+    if (!nullToAbsent || hairLength != null) {
+      map['hair_length'] = Variable<double>(hairLength);
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
@@ -1126,6 +1153,9 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
       humidityLevel: humidityLevel == null && nullToAbsent
           ? const Value.absent()
           : Value(humidityLevel),
+      hairLength: hairLength == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hairLength),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -1152,6 +1182,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
       ),
       weather: serializer.fromJson<String?>(json['weather']),
       humidityLevel: serializer.fromJson<int?>(json['humidityLevel']),
+      hairLength: serializer.fromJson<double?>(json['hairLength']),
       notes: serializer.fromJson<String?>(json['notes']),
       photoUrls: serializer.fromJson<String?>(json['photoUrls']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -1169,6 +1200,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
       'hairConditionRating': serializer.toJson<int?>(hairConditionRating),
       'weather': serializer.toJson<String?>(weather),
       'humidityLevel': serializer.toJson<int?>(humidityLevel),
+      'hairLength': serializer.toJson<double?>(hairLength),
       'notes': serializer.toJson<String?>(notes),
       'photoUrls': serializer.toJson<String?>(photoUrls),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -1184,6 +1216,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
     Value<int?> hairConditionRating = const Value.absent(),
     Value<String?> weather = const Value.absent(),
     Value<int?> humidityLevel = const Value.absent(),
+    Value<double?> hairLength = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     Value<String?> photoUrls = const Value.absent(),
     DateTime? createdAt,
@@ -1200,6 +1233,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
     humidityLevel: humidityLevel.present
         ? humidityLevel.value
         : this.humidityLevel,
+    hairLength: hairLength.present ? hairLength.value : this.hairLength,
     notes: notes.present ? notes.value : this.notes,
     photoUrls: photoUrls.present ? photoUrls.value : this.photoUrls,
     createdAt: createdAt ?? this.createdAt,
@@ -1224,6 +1258,9 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
       humidityLevel: data.humidityLevel.present
           ? data.humidityLevel.value
           : this.humidityLevel,
+      hairLength: data.hairLength.present
+          ? data.hairLength.value
+          : this.hairLength,
       notes: data.notes.present ? data.notes.value : this.notes,
       photoUrls: data.photoUrls.present ? data.photoUrls.value : this.photoUrls,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -1241,6 +1278,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
           ..write('hairConditionRating: $hairConditionRating, ')
           ..write('weather: $weather, ')
           ..write('humidityLevel: $humidityLevel, ')
+          ..write('hairLength: $hairLength, ')
           ..write('notes: $notes, ')
           ..write('photoUrls: $photoUrls, ')
           ..write('createdAt: $createdAt')
@@ -1258,6 +1296,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
     hairConditionRating,
     weather,
     humidityLevel,
+    hairLength,
     notes,
     photoUrls,
     createdAt,
@@ -1274,6 +1313,7 @@ class DailyLog extends DataClass implements Insertable<DailyLog> {
           other.hairConditionRating == this.hairConditionRating &&
           other.weather == this.weather &&
           other.humidityLevel == this.humidityLevel &&
+          other.hairLength == this.hairLength &&
           other.notes == this.notes &&
           other.photoUrls == this.photoUrls &&
           other.createdAt == this.createdAt);
@@ -1288,6 +1328,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
   final Value<int?> hairConditionRating;
   final Value<String?> weather;
   final Value<int?> humidityLevel;
+  final Value<double?> hairLength;
   final Value<String?> notes;
   final Value<String?> photoUrls;
   final Value<DateTime> createdAt;
@@ -1300,6 +1341,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
     this.hairConditionRating = const Value.absent(),
     this.weather = const Value.absent(),
     this.humidityLevel = const Value.absent(),
+    this.hairLength = const Value.absent(),
     this.notes = const Value.absent(),
     this.photoUrls = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -1313,6 +1355,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
     this.hairConditionRating = const Value.absent(),
     this.weather = const Value.absent(),
     this.humidityLevel = const Value.absent(),
+    this.hairLength = const Value.absent(),
     this.notes = const Value.absent(),
     this.photoUrls = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -1327,6 +1370,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
     Expression<int>? hairConditionRating,
     Expression<String>? weather,
     Expression<int>? humidityLevel,
+    Expression<double>? hairLength,
     Expression<String>? notes,
     Expression<String>? photoUrls,
     Expression<DateTime>? createdAt,
@@ -1341,6 +1385,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
         'hair_condition_rating': hairConditionRating,
       if (weather != null) 'weather': weather,
       if (humidityLevel != null) 'humidity_level': humidityLevel,
+      if (hairLength != null) 'hair_length': hairLength,
       if (notes != null) 'notes': notes,
       if (photoUrls != null) 'photo_urls': photoUrls,
       if (createdAt != null) 'created_at': createdAt,
@@ -1356,6 +1401,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
     Value<int?>? hairConditionRating,
     Value<String?>? weather,
     Value<int?>? humidityLevel,
+    Value<double?>? hairLength,
     Value<String?>? notes,
     Value<String?>? photoUrls,
     Value<DateTime>? createdAt,
@@ -1369,6 +1415,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
       hairConditionRating: hairConditionRating ?? this.hairConditionRating,
       weather: weather ?? this.weather,
       humidityLevel: humidityLevel ?? this.humidityLevel,
+      hairLength: hairLength ?? this.hairLength,
       notes: notes ?? this.notes,
       photoUrls: photoUrls ?? this.photoUrls,
       createdAt: createdAt ?? this.createdAt,
@@ -1402,6 +1449,9 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
     if (humidityLevel.present) {
       map['humidity_level'] = Variable<int>(humidityLevel.value);
     }
+    if (hairLength.present) {
+      map['hair_length'] = Variable<double>(hairLength.value);
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -1425,6 +1475,7 @@ class DailyLogsCompanion extends UpdateCompanion<DailyLog> {
           ..write('hairConditionRating: $hairConditionRating, ')
           ..write('weather: $weather, ')
           ..write('humidityLevel: $humidityLevel, ')
+          ..write('hairLength: $hairLength, ')
           ..write('notes: $notes, ')
           ..write('photoUrls: $photoUrls, ')
           ..write('createdAt: $createdAt')
@@ -2690,6 +2741,7 @@ typedef $$DailyLogsTableCreateCompanionBuilder =
       Value<int?> hairConditionRating,
       Value<String?> weather,
       Value<int?> humidityLevel,
+      Value<double?> hairLength,
       Value<String?> notes,
       Value<String?> photoUrls,
       Value<DateTime> createdAt,
@@ -2704,6 +2756,7 @@ typedef $$DailyLogsTableUpdateCompanionBuilder =
       Value<int?> hairConditionRating,
       Value<String?> weather,
       Value<int?> humidityLevel,
+      Value<double?> hairLength,
       Value<String?> notes,
       Value<String?> photoUrls,
       Value<DateTime> createdAt,
@@ -2755,6 +2808,11 @@ class $$DailyLogsTableFilterComposer
 
   ColumnFilters<int> get humidityLevel => $composableBuilder(
     column: $table.humidityLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get hairLength => $composableBuilder(
+    column: $table.hairLength,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2823,6 +2881,11 @@ class $$DailyLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get hairLength => $composableBuilder(
+    column: $table.hairLength,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -2882,6 +2945,11 @@ class $$DailyLogsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<double> get hairLength => $composableBuilder(
+    column: $table.hairLength,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
@@ -2928,6 +2996,7 @@ class $$DailyLogsTableTableManager
                 Value<int?> hairConditionRating = const Value.absent(),
                 Value<String?> weather = const Value.absent(),
                 Value<int?> humidityLevel = const Value.absent(),
+                Value<double?> hairLength = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> photoUrls = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -2940,6 +3009,7 @@ class $$DailyLogsTableTableManager
                 hairConditionRating: hairConditionRating,
                 weather: weather,
                 humidityLevel: humidityLevel,
+                hairLength: hairLength,
                 notes: notes,
                 photoUrls: photoUrls,
                 createdAt: createdAt,
@@ -2954,6 +3024,7 @@ class $$DailyLogsTableTableManager
                 Value<int?> hairConditionRating = const Value.absent(),
                 Value<String?> weather = const Value.absent(),
                 Value<int?> humidityLevel = const Value.absent(),
+                Value<double?> hairLength = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> photoUrls = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -2966,6 +3037,7 @@ class $$DailyLogsTableTableManager
                 hairConditionRating: hairConditionRating,
                 weather: weather,
                 humidityLevel: humidityLevel,
+                hairLength: hairLength,
                 notes: notes,
                 photoUrls: photoUrls,
                 createdAt: createdAt,

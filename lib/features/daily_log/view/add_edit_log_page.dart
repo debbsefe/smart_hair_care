@@ -5,7 +5,7 @@ import 'package:smart_hair_care/core/database/database.dart';
 import 'package:smart_hair_care/core/models/models.dart';
 import 'package:smart_hair_care/features/daily_log/notifiers/notifiers.dart';
 import 'package:smart_hair_care/features/daily_log/widgets/widgets.dart';
-import 'package:smart_hair_care/features/shared/utils/date_formatter.dart';
+import 'package:smart_hair_care/features/shared/shared.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 
 /// Weather options for daily logs
@@ -58,6 +58,7 @@ class _AddEditLogPageState extends ConsumerState<AddEditLogPage> {
   int? _hairConditionRating;
   String? _selectedWeather;
   int? _humidityLevel;
+  double? _hairLength;
   bool _isSubmitting = false;
 
   @override
@@ -74,6 +75,7 @@ class _AddEditLogPageState extends ConsumerState<AddEditLogPage> {
     _hairConditionRating = log?.hairConditionRating;
     _selectedWeather = log?.weather;
     _humidityLevel = log?.humidityLevel;
+    _hairLength = log?.hairLength;
   }
 
   @override
@@ -101,6 +103,7 @@ class _AddEditLogPageState extends ConsumerState<AddEditLogPage> {
             hairConditionRating: Value(_hairConditionRating),
             weather: Value(_selectedWeather),
             humidityLevel: Value(_humidityLevel),
+            hairLength: Value(_hairLength),
             notes: Value(_notesController.text.trim().nullIfEmpty),
           ),
         );
@@ -113,6 +116,7 @@ class _AddEditLogPageState extends ConsumerState<AddEditLogPage> {
           hairConditionRating: _hairConditionRating,
           weather: _selectedWeather,
           humidityLevel: _humidityLevel,
+          hairLength: _hairLength,
           notes: _notesController.text.trim().nullIfEmpty,
         );
       }
@@ -258,6 +262,16 @@ class _AddEditLogPageState extends ConsumerState<AddEditLogPage> {
               label: _humidityLevel?.toString(),
               onChanged: (value) {
                 setState(() => _humidityLevel = value.round());
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // Hair length slider
+            HairLengthSlider(
+              label: l10n.logHairLengthLabel,
+              value: _hairLength,
+              onChanged: (value) {
+                setState(() => _hairLength = value);
               },
             ),
             const SizedBox(height: 16),

@@ -87,6 +87,7 @@ class DailyLogFixtures {
     routineType: 'wash_day',
     productsUsed: '1,2',
     techniques: 'Squish to condish',
+    hairLength: 25,
     createdAt: today,
   );
 

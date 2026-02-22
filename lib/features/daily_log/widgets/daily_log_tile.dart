@@ -87,6 +87,25 @@ class DailyLogTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+              if (log.hairLength != null) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.straighten,
+                      size: 16,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${log.hairLength!.round()} cm',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               if (log.weather != null || log.humidityLevel != null) ...[
                 const SizedBox(height: 8),
                 Row(

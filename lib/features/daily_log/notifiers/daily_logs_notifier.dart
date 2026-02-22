@@ -19,6 +19,7 @@ class DailyLogsNotifier extends AsyncNotifier<List<DailyLog>> {
     int? hairConditionRating,
     String? weather,
     int? humidityLevel,
+    double? hairLength,
     String? notes,
     String? photoUrls,
   }) async {
@@ -31,6 +32,7 @@ class DailyLogsNotifier extends AsyncNotifier<List<DailyLog>> {
         hairConditionRating: Value(hairConditionRating),
         weather: Value(weather),
         humidityLevel: Value(humidityLevel),
+        hairLength: Value(hairLength),
         notes: Value(notes),
         photoUrls: Value(photoUrls),
       ),
