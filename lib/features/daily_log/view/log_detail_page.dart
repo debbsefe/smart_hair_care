@@ -140,6 +140,25 @@ class _LogDetailView extends ConsumerWidget {
                 ),
               ),
 
+            // Hair length
+            if (log.hairLength != null)
+              _DetailCard(
+                title: l10n.logHairLengthLabel,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.straighten,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.hairLengthValue(log.hairLength!.round()),
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
+              ),
+
             // Weather conditions
             if (log.weather != null || log.humidityLevel != null)
               _DetailCard(

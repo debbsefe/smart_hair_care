@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_hair_care/core/models/models.dart';
 import 'package:smart_hair_care/features/hair_profile/notifiers/notifiers.dart';
+import 'package:smart_hair_care/features/shared/shared.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 
 /// Page for setting up the hair profile (one-time onboarding)
@@ -702,16 +703,9 @@ class _CharacteristicsStep extends StatelessWidget {
             onChanged: onScalpTypeChanged,
           ),
           const SizedBox(height: 16),
-          Text(
-            '${l10n.profileLengthLabel}: '
-            '${hairLength?.toStringAsFixed(0) ?? 'Not set'} cm',
-            style: theme.textTheme.bodyMedium,
-          ),
-          Slider(
-            value: hairLength ?? 20,
-            max: 100,
-            divisions: 100,
-            label: '${(hairLength ?? 20).toStringAsFixed(0)} cm',
+          HairLengthSlider(
+            label: l10n.profileLengthLabel,
+            value: hairLength,
             onChanged: onLengthChanged,
           ),
         ],

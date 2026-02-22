@@ -208,7 +208,9 @@ class _ProfileView extends StatelessWidget {
                     _ProfileRow(
                       icon: Icons.straighten,
                       label: l10n.profileLengthLabel,
-                      value: '${profile.hairLength!.toStringAsFixed(1)} cm',
+                      value: l10n.hairLengthValue(
+                        profile.hairLength!.round(),
+                      ),
                     ),
                 ],
               ),

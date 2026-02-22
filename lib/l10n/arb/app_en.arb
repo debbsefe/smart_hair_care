@@ -32,6 +32,16 @@
     "logHairConditionLabel": "Hair Condition",
     "logWeatherLabel": "Weather",
     "logHumidityLabel": "Humidity",
+    "logHairLengthLabel": "Hair Length",
+    "hairLengthValue": "{length} cm",
+    "@hairLengthValue": {
+        "placeholders": {
+            "length": {
+                "type": "int"
+            }
+        }
+    },
+    "notSet": "Not set",
     "logProductsUsedLabel": "Products Used",
     "logProductsHint": "List products you used",
     "logTechniquesLabel": "Techniques",
