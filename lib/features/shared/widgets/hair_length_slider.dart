@@ -40,9 +40,7 @@ class HairLengthSlider extends StatelessWidget {
           value: value ?? 20,
           max: 100,
           divisions: 100,
-          label: value != null
-              ? l10n.hairLengthValue(value!.round())
-              : null,
+          label: value != null ? l10n.hairLengthValue(value!.round()) : null,
           onChanged: onChanged,
         ),
       ],
