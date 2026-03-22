@@ -55,6 +55,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   // Initialize logging
   _initializeLogging();
 
+  // Initialize Supabase
+  await initializeSupabase();
+
   runApp(
     ProviderScope(
       observers: const [AppProviderObserver()],
@@ -98,5 +101,8 @@ Future<void> initializeSupabase() async {
   await Supabase.initialize(
     url: supabaseUrl,
     anonKey: supabaseAnonKey,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.implicit,
+    ),
   );
 }
