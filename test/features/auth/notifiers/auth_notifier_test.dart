@@ -96,7 +96,7 @@ void main() {
           .signIn('not-an-email');
 
       final status = container.read(authNotifierProvider).value;
-      expect(status, isA<AuthError>());
+      expect(status, isA<InvalidEmailAddress>());
     });
 
     test('signIn shows error for empty email', () async {
@@ -110,7 +110,7 @@ void main() {
       await container.read(authNotifierProvider.notifier).signIn('');
 
       final status = container.read(authNotifierProvider).value;
-      expect(status, isA<AuthError>());
+      expect(status, isA<InvalidEmailAddress>());
     });
 
     test('signIn shows error on network failure', () async {
