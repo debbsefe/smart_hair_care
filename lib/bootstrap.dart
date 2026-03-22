@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Custom ProviderObserver for logging (Riverpod 3 API)
 final class AppProviderObserver extends ProviderObserver {
@@ -83,4 +84,19 @@ void _initializeLogging() {
       details.stack,
     );
   };
+}
+
+Future<void> initializeSupabase() async {
+  const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+
+  assert(
+    supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty,
+    'SUPABASE_URL and SUPABASE_ANON_KEY must be provided via --dart-define',
+  );
+
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
+  );
 }
