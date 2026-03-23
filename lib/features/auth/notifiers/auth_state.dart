@@ -10,9 +10,9 @@ final class Unauthenticated extends AuthStatus {
   const Unauthenticated();
 }
 
-/// A magic link has been sent; waiting for user to tap it.
-final class AwaitingMagicLink extends AuthStatus {
-  const AwaitingMagicLink({required this.email});
+/// An OTP code has been sent; waiting for user to enter it.
+final class AwaitingOtp extends AuthStatus {
+  const AwaitingOtp({required this.email});
 
   final String email;
 }

@@ -58,13 +58,10 @@ void main() {
       expect((status as Authenticated).user.email, 'test@example.com');
     });
 
-    test('signIn transitions to awaitingMagicLink on success', () async {
+    test('signIn transitions to awaitingOtp on success', () async {
       when(() => mockRepo.currentUser).thenReturn(null);
       when(
-        () => mockRepo.signInWithMagicLink(
-          email: any(named: 'email'),
-          redirectTo: any(named: 'redirectTo'),
-        ),
+        () => mockRepo.sendOtp(email: any(named: 'email')),
       ).thenAnswer((_) async {});
 
       final container = createContainer();
@@ -79,8 +76,8 @@ void main() {
           .signIn('test@example.com');
 
       final status = container.read(authNotifierProvider).value;
-      expect(status, isA<AwaitingMagicLink>());
-      expect((status! as AwaitingMagicLink).email, 'test@example.com');
+      expect(status, isA<AwaitingOtp>());
+      expect((status! as AwaitingOtp).email, 'test@example.com');
     });
 
     test('signIn shows error for invalid email', () async {
@@ -116,10 +113,7 @@ void main() {
     test('signIn shows error on network failure', () async {
       when(() => mockRepo.currentUser).thenReturn(null);
       when(
-        () => mockRepo.signInWithMagicLink(
-          email: any(named: 'email'),
-          redirectTo: any(named: 'redirectTo'),
-        ),
+        () => mockRepo.sendOtp(email: any(named: 'email')),
       ).thenThrow(Exception('Network error'));
 
       final container = createContainer();
@@ -130,6 +124,31 @@ void main() {
       await container
           .read(authNotifierProvider.notifier)
           .signIn('test@example.com');
+
+      final status = container.read(authNotifierProvider).value;
+      expect(status, isA<AuthError>());
+    });
+
+    test('verifyOtp shows error on invalid code', () async {
+      when(() => mockRepo.currentUser).thenReturn(null);
+      when(
+        () => mockRepo.verifyOtp(
+          email: any(named: 'email'),
+          token: any(named: 'token'),
+        ),
+      ).thenThrow(Exception('Invalid OTP'));
+
+      final container = createContainer();
+      addTearDown(container.dispose);
+
+      await container.read(authNotifierProvider.future);
+
+      await container
+          .read(authNotifierProvider.notifier)
+          .verifyOtp(
+            email: 'test@example.com',
+            token: '000000',
+          );
 
       final status = container.read(authNotifierProvider).value;
       expect(status, isA<AuthError>());
@@ -158,7 +177,7 @@ void main() {
 
       await container.read(authNotifierProvider.future);
 
-      // Simulate magic link callback
+      // Simulate OTP verification callback
       when(() => mockRepo.currentUser).thenReturn(FakeUser());
       authStreamController.add(
         const AuthState(AuthChangeEvent.signedIn, null),

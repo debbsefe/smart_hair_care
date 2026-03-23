@@ -6,9 +6,6 @@ import 'package:smart_hair_care/features/shared/shared.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'
     show AuthChangeEvent, AuthState;
 
-/// Redirect URL for Supabase magic link deep link callback.
-const _redirectUrl = String.fromEnvironment('SUPABASE_REDIRECT_URL');
-
 /// Manages authentication state via Supabase email OTP.
 class AuthNotifier extends AsyncNotifier<AuthStatus> {
   AuthRepository get _repo => ref.watch(authRepositoryProvider);
@@ -16,7 +13,7 @@ class AuthNotifier extends AsyncNotifier<AuthStatus> {
 
   @override
   FutureOr<AuthStatus> build() {
-    // Listen for auth state changes (magic link callback, token refresh, etc.)
+    // Listen for auth state changes (OTP verification, token refresh, etc.)
     _authSub = _repo.onAuthStateChange.listen((authState) {
       final event = authState.event;
       if (event == AuthChangeEvent.signedIn ||
@@ -40,7 +37,7 @@ class AuthNotifier extends AsyncNotifier<AuthStatus> {
     return const Unauthenticated();
   }
 
-  /// Send a magic link to [email].
+  /// Send an OTP code to [email].
   Future<void> signIn(String email) async {
     final trimmed = email.trim();
     if (trimmed.isEmpty || !isValidEmail(trimmed)) {
@@ -52,11 +49,22 @@ class AuthNotifier extends AsyncNotifier<AuthStatus> {
 
     state = const AsyncLoading();
     try {
-      await _repo.signInWithMagicLink(
-        email: trimmed,
-        redirectTo: _redirectUrl,
-      );
-      state = AsyncData(AwaitingMagicLink(email: trimmed));
+      await _repo.sendOtp(email: trimmed);
+      state = AsyncData(AwaitingOtp(email: trimmed));
+    } on Exception catch (e) {
+      state = AsyncData(AuthError(message: e.toString()));
+    }
+  }
+
+  /// Verify the OTP [token] for [email].
+  Future<void> verifyOtp({
+    required String email,
+    required String token,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      await _repo.verifyOtp(email: email, token: token);
+      // Auth state change listener will handle the transition to Authenticated
     } on Exception catch (e) {
       state = AsyncData(AuthError(message: e.toString()));
     }

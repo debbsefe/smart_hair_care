@@ -14,13 +14,20 @@ class AuthRepository {
   /// Stream of auth state changes (sign in, sign out, token refresh).
   Stream<AuthState> get onAuthStateChange => _client.auth.onAuthStateChange;
 
-  Future<void> signInWithMagicLink({
+  /// Send a one-time password (6-digit code) to [email].
+  Future<void> sendOtp({required String email}) async {
+    await _client.auth.signInWithOtp(email: email);
+  }
+
+  /// Verify the OTP [token] sent to [email].
+  Future<AuthResponse> verifyOtp({
     required String email,
-    String? redirectTo,
+    required String token,
   }) async {
-    await _client.auth.signInWithOtp(
+    return _client.auth.verifyOTP(
       email: email,
-      emailRedirectTo: redirectTo,
+      token: token,
+      type: OtpType.email,
     );
   }
 

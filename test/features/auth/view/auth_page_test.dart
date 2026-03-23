@@ -43,15 +43,12 @@ void main() {
       expect(find.byType(FilledButton), findsOneWidget);
     });
 
-    testWidgets('shows check-email view after sending magic link', (
+    testWidgets('shows OTP entry view after sending code', (
       tester,
     ) async {
       when(() => mockRepo.currentUser).thenReturn(null);
       when(
-        () => mockRepo.signInWithMagicLink(
-          email: any(named: 'email'),
-          redirectTo: any(named: 'redirectTo'),
-        ),
+        () => mockRepo.sendOtp(email: any(named: 'email')),
       ).thenAnswer((_) async {});
 
       await tester.pumpApp(
@@ -67,8 +64,9 @@ void main() {
       await tester.tap(find.byType(FilledButton));
       await tester.pumpAndSettle();
 
-      // Should show the "check email" view with the email
+      // Should show the OTP entry view with the email
       expect(find.textContaining('test@example.com'), findsOneWidget);
+      expect(find.byType(TextField), findsOneWidget);
     });
 
     testWidgets('renders authenticated view when signed in', (tester) async {
@@ -124,10 +122,7 @@ void main() {
       expect(find.byType(TextFormField), findsOneWidget);
       // The form validator should prevent sign-in
       verifyNever(
-        () => mockRepo.signInWithMagicLink(
-          email: any(named: 'email'),
-          redirectTo: any(named: 'redirectTo'),
-        ),
+        () => mockRepo.sendOtp(email: any(named: 'email')),
       );
     });
   });

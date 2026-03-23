@@ -4,7 +4,7 @@ import 'package:smart_hair_care/features/auth/notifiers/notifiers.dart';
 import 'package:smart_hair_care/features/shared/shared.dart';
 import 'package:smart_hair_care/l10n/l10n.dart';
 
-/// Account page handling sign-in via magic link and sign-out.
+/// Account page handling sign-in via email OTP and sign-out.
 class AuthPage extends ConsumerStatefulWidget {
   const AuthPage({super.key});
 
@@ -22,11 +22,13 @@ class AuthPage extends ConsumerStatefulWidget {
 
 class _AuthPageState extends ConsumerState<AuthPage> {
   final _emailController = TextEditingController();
+  final _otpController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     _emailController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
 
@@ -44,8 +46,10 @@ class _AuthPageState extends ConsumerState<AuthPage> {
             formKey: _formKey,
             onSignIn: _handleSignIn,
           ),
-          AwaitingMagicLink(:final email) => _MagicLinkSentView(
+          AwaitingOtp(:final email) => _OtpEntryView(
             email: email,
+            otpController: _otpController,
+            onVerify: () => _handleVerify(email),
             onResend: () => _handleResend(email),
           ),
           Authenticated(:final user) => _AuthenticatedView(
@@ -78,7 +82,17 @@ class _AuthPageState extends ConsumerState<AuthPage> {
     }
   }
 
+  Future<void> _handleVerify(String email) async {
+    final token = _otpController.text.trim();
+    if (token.length == 6) {
+      await ref
+          .read(authNotifierProvider.notifier)
+          .verifyOtp(email: email, token: token);
+    }
+  }
+
   Future<void> _handleResend(String email) async {
+    _otpController.clear();
     await ref.read(authNotifierProvider.notifier).signIn(email);
   }
 
@@ -157,7 +171,7 @@ class _SignInView extends StatelessWidget {
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: onSignIn,
-                  child: Text(l10n.sendMagicLink),
+                  child: Text(l10n.sendOtpCode),
                 ),
               ),
             ],
@@ -168,13 +182,17 @@ class _SignInView extends StatelessWidget {
   }
 }
 
-class _MagicLinkSentView extends StatelessWidget {
-  const _MagicLinkSentView({
+class _OtpEntryView extends StatelessWidget {
+  const _OtpEntryView({
     required this.email,
+    required this.otpController,
+    required this.onVerify,
     required this.onResend,
   });
 
   final String email;
+  final TextEditingController otpController;
+  final VoidCallback onVerify;
   final VoidCallback onResend;
 
   @override
@@ -183,31 +201,53 @@ class _MagicLinkSentView extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.mark_email_read_outlined,
+              Icons.lock_outline,
               size: 80,
               color: theme.colorScheme.primary,
             ),
             const SizedBox(height: 24),
             Text(
-              l10n.checkEmailTitle,
+              l10n.enterOtpTitle,
               style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
             Text(
-              l10n.checkEmailHint(email),
+              l10n.enterOtpHint(email),
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyLarge,
             ),
             const SizedBox(height: 32),
+            TextField(
+              controller: otpController,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              maxLength: 6,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                letterSpacing: 8,
+              ),
+              decoration: InputDecoration(
+                labelText: l10n.otpFieldLabel,
+                counterText: '',
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: onVerify,
+                child: Text(l10n.verifyCode),
+              ),
+            ),
+            const SizedBox(height: 16),
             OutlinedButton(
               onPressed: onResend,
-              child: Text(l10n.resendLink),
+              child: Text(l10n.resendCode),
             ),
           ],
         ),

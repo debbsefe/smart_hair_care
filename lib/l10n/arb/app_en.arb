@@ -121,17 +121,19 @@
     "accountTitle": "Account",
     "signIn": "Sign In",
     "enterEmail": "Email address",
-    "sendMagicLink": "Send Magic Link",
-    "checkEmailTitle": "Check Your Email",
-    "checkEmailHint": "We sent a sign-in link to {email}. Tap the link to continue.",
-    "@checkEmailHint": {
+    "sendOtpCode": "Send Code",
+    "enterOtpTitle": "Enter Verification Code",
+    "enterOtpHint": "We sent a 6-digit code to {email}. Enter it below.",
+    "@enterOtpHint": {
         "placeholders": {
             "email": {
                 "type": "String"
             }
         }
     },
-    "resendLink": "Resend Link",
+    "otpFieldLabel": "6-digit code",
+    "verifyCode": "Verify",
+    "resendCode": "Resend Code",
     "signedInAs": "Signed in as {email}",
     "@signedInAs": {
         "placeholders": {
