@@ -117,5 +117,35 @@
     "searchProductsNoResults": "No products found",
     "searchProductsError": "Failed to search products",
     "searchProductsRetry": "Retry",
-    "searchOnline": "Search Online"
+    "searchOnline": "Search Online",
+    "accountTitle": "Account",
+    "signIn": "Sign In",
+    "enterEmail": "Email address",
+    "sendOtpCode": "Send Code",
+    "enterOtpTitle": "Enter Verification Code",
+    "enterOtpHint": "We sent a 6-digit code to {email}. Enter it below.",
+    "@enterOtpHint": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "otpFieldLabel": "6-digit code",
+    "verifyCode": "Verify",
+    "resendCode": "Resend Code",
+    "signedInAs": "Signed in as {email}",
+    "@signedInAs": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "signOut": "Sign Out",
+    "signOutConfirmTitle": "Sign Out?",
+    "signOutConfirmMessage": "You will need to sign in again to sync your data.",
+    "invalidEmail": "Please enter a valid email address",
+    "authErrorGeneric": "Something went wrong. Please try again.",
+    "tryAgain": "Try Again"
 }

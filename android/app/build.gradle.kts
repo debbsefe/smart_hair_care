@@ -61,16 +61,19 @@ android {
             dimension = "default"
             applicationIdSuffix = ""
             manifestPlaceholders["appName"] = "Smart Hair Care"
+            manifestPlaceholders["applinkhost"] = "com.eferha.smart_hair_care"
         }
         create("staging") {
             dimension = "default"
             applicationIdSuffix = ".stg"
             manifestPlaceholders["appName"] = "[STG] Smart Hair Care"
+            manifestPlaceholders["applinkhost"] = "com.eferha.smart_hair_care.stg"
         }
         create("development") {
             dimension = "default"
             applicationIdSuffix = ".dev"
             manifestPlaceholders["appName"] = "[DEV] Smart Hair Care"
+            manifestPlaceholders["applinkhost"] = "com.eferha.smart_hair_care.dev"
         }
     }
 
