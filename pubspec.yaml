@@ -37,7 +37,7 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.0.4
   json_serializable: ^6.9.3
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
   retrofit_generator: ^10.2.1
   riverpod_generator: ^4.0.0+1
   riverpod_lint: ^3.0.3
