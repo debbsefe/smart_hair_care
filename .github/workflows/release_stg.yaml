@@ -28,14 +28,14 @@ jobs:
           ref: ${{github.event.after}}
 
       - name: key.properties File
-        uses: timheuer/base64-to-file@v1.2
+        uses: timheuer/base64-to-file@v2.0
         with:
           fileName: 'key.properties'
           fileDir: './android'
           encodedString: ${{ secrets.ANDROID_KEY_PROPERTIES }}
 
       - name: upload-keystore.jks File
-        uses: timheuer/base64-to-file@v1.2
+        uses: timheuer/base64-to-file@v2.0
         with:
           fileName: 'upload-keystore.jks'
           fileDir: './android/app'
