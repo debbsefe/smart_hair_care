@@ -62,7 +62,7 @@ jobs:
       - name: Build Flutter appbundle
         run: flutter build appbundle --flavor staging -t lib/main_staging.dart --build-number $GITHUB_RUN_NUMBER
 
-      - uses: maierj/fastlane-action@v3.1.0
+      - uses: maierj/fastlane-action@v3.2.0
         name: Upload appbundle
         with:
           subdirectory: 'android/'
